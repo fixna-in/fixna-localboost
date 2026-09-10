@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CreativeRecommendation",
+  "type": "object",
+  "required": [
+    "headline",
+    "body",
+    "cta"
+  ],
+  "properties": {
+    "headline": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "cta": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

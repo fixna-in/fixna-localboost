@@ -1,0 +1,13 @@
+# Platform Integration Rules
+
+Use AdvertisingPlatformAdapter.
+
+Implement mock adapters first:
+MockGoogleAdsAdapter
+MockMetaAdsAdapter
+MockWhatsAppAdapter
+
+Real providers are later integrations.
+Never leak provider-specific objects into core campaign domain.
+External calls must have timeouts, retries only where safe, idempotency,
+structured error mapping and audit events.

@@ -1,0 +1,10 @@
+# Testing Rules
+
+Backend: JUnit 5, Mockito, Testcontainers.
+Frontend: Vitest/Jest, React Testing Library, Playwright.
+
+Critical paths need unit and integration coverage.
+Critical E2E:
+register -> tenant -> business -> campaign -> geo/audience -> budget ->
+AI recommendation -> approval -> mock launch -> metrics.
+Test cross-tenant access denial explicitly.

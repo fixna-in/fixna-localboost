@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BudgetAllocation",
+  "type": "object",
+  "required": [
+    "allocations"
+  ],
+  "properties": {
+    "allocations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "channel",
+          "amount"
+        ],
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

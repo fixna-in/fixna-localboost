@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AudienceRecommendation",
+  "type": "object",
+  "required": [
+    "segments",
+    "reasoning"
+  ],
+  "properties": {
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reasoning": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
