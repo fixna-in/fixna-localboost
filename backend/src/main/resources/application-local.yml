@@ -1,0 +1,8 @@
+# Local development profile (docker compose services on localhost).
+# Inherits safe defaults from application.yml; DEBUG diagnostics for the
+# Fixna packages only. All secrets remain the dev placeholders — never use
+# this profile for shared deployments.
+logging:
+  level:
+    root: INFO
+    in.fixna.platform: DEBUG

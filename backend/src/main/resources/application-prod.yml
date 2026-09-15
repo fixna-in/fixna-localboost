@@ -1,0 +1,17 @@
+# Production environment. NOTHING defaults to a dev/localhost value here.
+# Missing/weak mandatory configuration fails startup (SecurityStartupValidator
+# for the JWT secret, ProdEnvironmentValidator for the data plane) — the
+# application must never silently fall back to local/dev values in prod.
+fixna:
+  security:
+    jwt:
+      secret: ${FIXNA_JWT_SECRET:}
+      access-ttl: ${FIXNA_JWT_ACCESS_TTL:PT15M}
+      refresh-ttl: ${FIXNA_JWT_REFRESH_TTL:P7D}
+    hsts-enabled: true
+  ai:
+    provider: ${FIXNA_AI_PROVIDER:mock}
+logging:
+  level:
+    root: INFO
+    in.fixna.platform: INFO

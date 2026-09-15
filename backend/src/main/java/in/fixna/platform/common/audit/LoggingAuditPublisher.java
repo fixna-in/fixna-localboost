@@ -5,15 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * MVP {@link AuditPublisher} writing structured single-line audit facts to
+ * MVP audit sink writing structured single-line audit facts to
  * the log. Carries only ids/action metadata — never secrets or tokens.
+ * Delegated to by {@link PersistedAuditPublisher} (the primary
+ * {@link AuditPublisher}); kept as a separate bean for log-only use.
  */
 @Component
-public class LoggingAuditPublisher implements AuditPublisher {
+public class LoggingAuditPublisher {
 
     private static final Logger AUDIT_LOG = LoggerFactory.getLogger("fixna.audit");
 
-    @Override
+    /** Writes the structured single-line audit fact (no persistence here). */
     public void publish(AuditEvent event) {
         AUDIT_LOG.info(
                 "action={} tenant={} actor={} entity={}:{} details={} at={}",

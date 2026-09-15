@@ -1,32 +1,32 @@
 # Current Task
 
-Task: Backend foundation (Workflow 01) + Frontend foundation (Workflow 02)
+Task: Workflow 11 — Observability (.cline/workflows/11-observability.md)
 
-Phase: 1-2
-Status: IN_PROGRESS
+Phase: closeout
+Status: COMPLETE
 
-Read:
-- AGENTS.md
-- .clinerules/*
-- docs/02-architecture/*
-- docs/03-api/api-overview.md
-- requirements/*
+Verified 2026-09-15: `mvn -f backend/pom.xml test` → Tests run: 158,
+Failures: 0, Errors: 0, Skipped: 0, BUILD SUCCESS (WF10 baseline 150 + 8).
 
-Scope:
-- Workflow 00 done: git init (uncommitted), Flyway copies under
-  backend/src/main/resources/db/migration, backend smoke test green
-  (mvn-test2.log BUILD SUCCESS), frontend skeleton builds (npm-build3.log).
-- Workflow 01: common error envelope + FixnaException + GlobalExceptionHandler,
-  RequestIdFilter, TenantContext, AuditEvent/Publisher, SecurityConfig
-  (fail-closed), OpenApiConfig, HealthController, TenantContextTest,
-  RequestIdAndErrorTest.
-- Workflow 02: axios API client with envelope + request-id, QueryClient
-  providers + loading/error states, layout wired, health probe on homepage.
+Delivered this task:
+- RequestLoggingFilter (`fixna.access`): one structured access line per
+  /api/v1/** request — method/path/status/durationMs + requestId/tenantId/
+  userId; URI-only (never query strings); registered outermost in
+  SecurityConfig so the final status and total time are captured.
+- Adapter telemetry: CampaignLaunchService.attempt emits one `platform.launch`
+  OperationTimer line per attempt (status SUCCESS/FAILED, platform=GOOGLE/META/
+  WHATSAPP). AI telemetry (`ai.recommend`) already wired in AiRecommendationService.
+- OperationTimer.close() made idempotent (double-close emits once); fixed
+  missing `java.util.UUID` import that broke compilation (pre-existing WF11
+  breakage this session resumed into).
+- docs/07-operations/observability.md — full structured-logging conventions:
+  logger categories, levels, access format, correlation, health/readiness,
+  metrics, OTel-ready seams, secrets policy.
+- application.yml — `logging.level` (root, in.fixna.platform: INFO).
 
-Do not implement:
-- real Google Ads
-- real Meta Ads
-- real WhatsApp
-- payment provider
-- autonomous AI actions
-- JWT login flow (Workflow 03)
+Tests added: OperationTimerTest (3), RequestLoggingFilterTest (3),
+ReadinessControllerTest (2).
+
+Next: Workflow 12 — Final E2E (.cline/workflows/12-final-e2e.md).
+
+

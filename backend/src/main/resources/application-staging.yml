@@ -1,0 +1,14 @@
+# Staging environment — mirrors prod concerns (HSTS, no dev placeholder)
+# but remains safe for demo data. Mandatory configuration comes from the
+# environment; missing values fail startup.
+fixna:
+  security:
+    jwt:
+      secret: ${FIXNA_JWT_SECRET:}
+    hsts-enabled: ${FIXNA_HSTS_ENABLED:true}
+  ai:
+    provider: ${FIXNA_AI_PROVIDER:mock}
+logging:
+  level:
+    root: INFO
+    in.fixna.platform: INFO

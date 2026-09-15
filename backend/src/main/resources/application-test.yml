@@ -1,0 +1,17 @@
+# Automated test profile. The conservative unit/integration suites stay
+# infrastructure-free; the Testcontainers end-to-end suite (@ActiveProfiles
+# "test") supplies a real PostgreSQL datasource dynamically via
+# @DynamicPropertySource, so no datasource is configured here.
+fixna:
+  security:
+    jwt:
+      secret: test-only-secret-change-me-24c0d1e2f3a4!!!!
+    rate-limit:
+      # Higher than prod so test flakes from real IP sharing are avoided.
+      per-ip-per-minute: ${FIXNA_RATE_LIMIT_PER_IP_PER_MINUTE:1000}
+  ai:
+    provider: mock
+logging:
+  level:
+    root: INFO
+    in.fixna.platform: DEBUG

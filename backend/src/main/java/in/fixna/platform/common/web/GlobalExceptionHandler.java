@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger ERROR_LOG = LoggerFactory.getLogger("fixna.error");
 
     @ExceptionHandler(FixnaException.class)
     public ResponseEntity<ApiError> handleFixna(FixnaException ex, HttpServletRequest request) {
@@ -45,6 +49,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleUnexpected(Exception ex, HttpServletRequest request) {
+        // Server-side only: callers get the generic envelope; correlation via
+        // requestId. Never render ex.getMessage() — it may contain driver,
+        // SQL, or provider internals.
+        ERROR_LOG.error("Unhandled error requestId={} path={}",
+                MDC.get(RequestIdFilter.REQUEST_ID_ATTRIBUTE),
+                request != null ? safePath(request) : "<none>", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(build(
                         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -59,7 +69,12 @@ public class GlobalExceptionHandler {
                 status.value(),
                 code,
                 message,
-                request != null ? request.getRequestURI() : null,
+                request != null ? safePath(request) : null,
                 MDC.get(RequestIdFilter.REQUEST_ID_ATTRIBUTE));
+    }
+
+    /** Request path only — never query strings (they may carry secrets/tokens). */
+    private static String safePath(HttpServletRequest request) {
+        return request.getRequestURI();
     }
 }

@@ -1,32 +1,59 @@
 package in.fixna.platform.common.config;
 
+import in.fixna.platform.auth.JwtAuthenticationFilter;
+import in.fixna.platform.auth.JwtProperties;
+import in.fixna.platform.common.web.ApiAccessDeniedHandler;
+import in.fixna.platform.common.web.ApiAuthenticationEntryPoint;
+import in.fixna.platform.common.web.RateLimitFilter;
 import in.fixna.platform.common.web.RequestIdFilter;
+import in.fixna.platform.common.web.RequestLoggingFilter;
+import in.fixna.platform.common.web.SecurityHeadersFilter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 /**
- * Workflow 01 security foundation: stateless, CSRF disabled (token-based API),
- * request-id correlation first in the chain.
- *
- * <p>Workflow 03 adds the JWT authentication filter and RBAC rules. Until
- * then every /api/v1 route requires authentication so unsecured endpoints
- * fail closed; health/docs stay public for bootstrap verification.
+ * Workflow 03 security plus Workflow 10 hardening: stateless JWT, CSRF
+ * disabled (token-based API), fail-closed on /api/v1 (authenticated), CORS
+ * from the configured allowlist, rate limiting on the public auth surface,
+ * and secure response headers. Public: auth endpoints, API liveness probe,
+ * actuator health/info, OpenAPI docs.
  */
 @Configuration
+@EnableConfigurationProperties({JwtProperties.class, CorsProperties.class})
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, RequestIdFilter requestIdFilter)
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            RequestIdFilter requestIdFilter,
+            RequestLoggingFilter requestLoggingFilter,
+            SecurityHeadersFilter securityHeadersFilter,
+            RateLimitFilter rateLimitFilter,
+            JwtAuthenticationFilter jwtFilter,
+            ApiAuthenticationEntryPoint entryPoint,
+            ApiAccessDeniedHandler deniedHandler)
             throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint)
+                        .accessDeniedHandler(deniedHandler))
                 .addFilterBefore(requestIdFilter, SecurityContextHolderFilter.class)
+                .addFilterBefore(requestLoggingFilter, RequestIdFilter.class)
+                .addFilterBefore(securityHeadersFilter, RequestIdFilter.class)
+                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
+                                "/api/v1/auth/**",
+                                "/api/v1/health",
                                 "/actuator/health",
                                 "/actuator/info",
                                 "/v3/api-docs/**",

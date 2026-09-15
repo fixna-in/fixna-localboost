@@ -34,3 +34,14 @@ PATCH /leads/{id}
 Admin:
 GET /admin/tenants
 GET /admin/audit
+GET /admin/tenants/{id}/members
+PUT /admin/tenants/{id}/plan
+
+Subscriptions:
+GET /subscriptions/current
+
+Audit viewer:
+GET /audit
+
+Details: docs/03-api/analytics-leads.md, .../campaign.md, .../geo-audience.md,
+.../ai.md, .../platform.md, .../admin-billing.md
