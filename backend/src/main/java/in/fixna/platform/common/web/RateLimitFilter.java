@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,6 +40,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private final RateLimiter limiter;
     private final ObjectMapper mapper;
 
+    /**
+     * Spring constructor. Explicitly {@code @Autowired} because the
+     * package-visible test seam below gives the class two constructors —
+     * without the annotation Spring cannot pick one and fails with
+     * "No default constructor found" during full-context boots.
+     */
+    @Autowired
     public RateLimitFilter(
             @Value("${fixna.security.rate-limit.per-ip-per-minute:20}") int perIpPerMinute) {
         this.limiter = new RateLimiter(perIpPerMinute, Duration.ofMinutes(1));

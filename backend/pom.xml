@@ -14,6 +14,19 @@
  <name>fixna-api</name>
  <description>Fixna LocalBoost API</description>
  <properties><java.version>21</java.version></properties>
+ <dependencyManagement>
+  <dependencies>
+   <!-- Zonky embedded-postgres binaries BOM (platform PG binaries for the
+        local-nodocker profile; Windows/Linux/macOS artifacts on Central). -->
+   <dependency>
+    <groupId>io.zonky.test.postgres</groupId>
+    <artifactId>embedded-postgres-binaries-bom</artifactId>
+    <version>17.1.0</version>
+    <type>pom</type>
+    <scope>import</scope>
+   </dependency>
+  </dependencies>
+ </dependencyManagement>
  <dependencies>
   <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
   <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
@@ -23,6 +36,14 @@
   <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><scope>runtime</scope></dependency>
   <dependency><groupId>org.flywaydb</groupId><artifactId>flyway-core</artifactId></dependency>
   <dependency><groupId>org.flywaydb</groupId><artifactId>flyway-database-postgresql</artifactId></dependency>
+  <!-- Embedded PostgreSQL for the local-nodocker profile: runs the same
+       production migrations/JSONB schema without Docker. First activation
+       downloads platform PostgreSQL binaries via the Zonky BOM. -->
+  <dependency>
+    <groupId>io.zonky.test</groupId>
+    <artifactId>embedded-postgres</artifactId>
+    <version>2.1.0</version>
+  </dependency>
   <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-redis</artifactId></dependency>
   <dependency><groupId>io.jsonwebtoken</groupId><artifactId>jjwt-api</artifactId><version>0.12.6</version></dependency>
   <dependency><groupId>io.jsonwebtoken</groupId><artifactId>jjwt-impl</artifactId><version>0.12.6</version><scope>runtime</scope></dependency>
@@ -33,5 +54,5 @@
   <dependency><groupId>org.testcontainers</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
   <dependency><groupId>org.testcontainers</groupId><artifactId>postgresql</artifactId><scope>test</scope></dependency>
  </dependencies>
- <build><plugins><plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin></plugins></build>
+ <build><plugins><plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId><configuration><mainClass>in.fixna.platform.FixnaApplication</mainClass></configuration></plugin></plugins><finalName>fixna-api</finalName></build>
 </project>

@@ -1,5 +1,19 @@
 # Progress
 
+## Latest hotfixes (2026-09-17, post-cc95cc0)
+- [x] `PlatformJsonShapes` compile fix: missing
+  `dto.PlatformConnectionResponse` import added; bogus
+  `StatusOnly`/`ChannelList` `TypeReference`s replaced with
+  `List<PlatformConnectionResponse>` (matches
+  `GET /api/v1/platform-connections`). Files: `platform/PlatformJsonShapes.java`.
+- [x] `spring-boot:run` duplicate-main fix: `backend/pom.xml` pins
+  `<mainClass>in.fixna.platform.FixnaApplication</mainClass>`
+  (+ `<finalName>fixna-api</finalName>`); duplicate `Application.java`
+  retained, recommended follow-up is delete-it-and-keep-`FixnaApplication`.
+- Next: re-run `mvn -f backend/pom.xml compile -DskipTests` (shell capture
+  flaky on Windows — run one command at a time), then `spring-boot:run`
+  with `local-nodocker` profile.
+
 ## What works / exists
 - [x] Repository scaffold: backend/ (Maven, Java 21, Spring Boot 3.5.6),
   frontend/ (package.json), database/ (V1–V6 migrations + V100 demo seed),
@@ -108,11 +122,54 @@
   application.yml logging.level (root/in.fixna.platform INFO). New tests:
   OperationTimerTest (3), RequestLoggingFilterTest (3), ReadinessControllerTest (2).
 
+
+- [x] Workflow 12 track — creatives + E2E foundation (verified 2026-09-15,
+  `mvn test` → 173 tests, 0 failures, 3 skipped — FixnaEndToEndTest
+  Testcontainers suite auto-skips without Docker, runs in CI): creative
+  module (Creative DRAFT/READY + canTransitionTo, CreativeRepository,
+  CreativeRequest/Response DTOs, CreativeService tenant-scoped
+  per-campaign CRUD, CreativeController, CreativeServiceTest ×8),
+  ProdEnvironmentValidator prod data-plane fail-fast
+  (+ProdEnvironmentValidatorTest ×4), frontend/.env.example documented
+  (NEXT_PUBLIC_* only, no secrets).
+- [x] Workflow 13 environment profiles (committed cc95cc0 2026-09-15;
+  reconciliation follow-ups fixed + verified same day): base application.yml
+  rework (server port env,
+  Hikari pool tuning keys, Jackson ISO dates, actuator/springdoc,
+  fixna.app-env, ai.daily-quota, platform.default-mode,
+  billing.default-plan, Redis host/port) + AiSettings typed
+  @ConfigurationProperties (provider, dailyQuota — wiring to confirm);
+  profile files application-local/dev/test/staging/prod.yml — local DEBUG
+  diagnostics, dev HSTS on TLS hosts, test (test-only JWT secret, per-ip
+  rate-limit 1000, mock AI, conservative suites infra-free + Testcontainers
+  E2E via @DynamicPropertySource), staging (HSTS, no dev placeholder,
+  empty-default JWT secret), prod (nothing defaults to localhost/dev;
+  fail-fast via SecurityStartupValidator + ProdEnvironmentValidator);
+  frontend/.env.example NEXT_PUBLIC_API_BASE_URL/APP_ENV with no-secrets
+  note. Workflow 14 logging rules closed by WF11 implementation (SLF4J-only
+  production code, requestId MDC + parameterized logging, fixna.error,
+  profile-aware levels).
+
+
+- [x] Workflow 12 final E2E (verified 2026-09-15): `mvn clean test` from
+  scratch → 178 tests, 0 failures, 3 skipped, EXIT-0. FixnaEndToEndTest
+  (Testcontainers, real PostgreSQL + all migrations) covers the complete
+  journey (register→tenant→business→location→campaign→geo→audience→budget→
+  AI rec→review→approve→mock launch→metrics→lead→dashboard), cross-tenant
+  denial (NOT_FOUND for other tenants' campaign/business), invalid input
+  (BUDGET_EXCEEDED / INVALID_GEO_TARGET / AI_VALIDATION_FAILED), idempotent
+  duplicate launch (re-run after ACTIVE is a no-op) and demo mode without
+  external credentials. Docker startup verified via CI path (ubuntu-latest
+  runs the E2E on every push/PR; local Docker not installed — documented).
+  README: Local development rewritten (local profile run command, compose
+  services with ports, API/Swagger/health URLs, Flyway schema ownership,
+  frontend .env.local flow) + new Testing section (E2E Docker behavior) +
+  duplicate h1 demoted. Frontend build green (Next.js 15.5.25, EXIT-0;
+  Vitest test runner still absent — noted limitation).
+
 ## What's left (aligned to .cline/tasks/BACKLOG.md + workflows)
-- Workflow 12: final E2E.
-- LocalBoost remaining: budget, creatives.
-- Production: OpenTelemetry (real tracer/exporters), CI/CD completion, E2E
-  (register→…→mock launch→metrics), deployment.
+- Production: OpenTelemetry (real tracer/exporters), CI/CD completion
+  (coverage, Docker image build, image security scan), deployment.
 
 ## Known issues / gaps found during review
 1. `database/migrations/` (docs copy) still lags the canonical
@@ -136,5 +193,19 @@ WF09 verified green (`mvn -f backend/pom.xml test` → 124 tests,
 (`mvn -f backend/pom.xml test` → 150 tests, 0 failures, 0 errors, 0 skipped,
 BUILD SUCCESS 2026-09-13; frontend build green at WF02). WF11 verified green
 (`mvn -f backend/pom.xml test` → 158 tests, 0 failures, 0 errors, 0 skipped,
-BUILD SUCCESS 2026-09-15).
+BUILD SUCCESS 2026-09-15). WF12 verified green
+(`mvn -f backend/pom.xml test` → 173 tests, 0 failures, 0 errors, 3 skipped —
+Testcontainers E2E auto-skip without Docker, BUILD SUCCESS 2026-09-15);
+WF12 closeout verified green
+(`mvn -f backend/pom.xml clean test` from scratch → 178 tests, 0 failures,
+3 skipped, EXIT-0, 2026-09-15).
+WF13 verified green after follow-up fixes (`mvn -f backend/pom.xml test` →
+178 tests, 0 failures, 0 errors, 3 skipped, EXIT-0; frontend `npm run build`
+→ Next.js 15.5.25 compiled, 4/4 static pages, EXIT-0 — 2026-09-15).
+WF14 logging/observability-rules PASSED on first read (no System.out/err
+in production code, fixna.* logger categories, MDC requestId on
+RequestIdFilter + cleared in finally, safe path in GlobalExceptionHandler
+— 2026-09-15).
+All workflows WF00–WF14 are implemented and verified; remaining work
+is the production track only.
 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE stylesheet PUBLIC "-//W3C//DTD XSL 1.0//EN" "http://www.w3.org/1999/XSL/Transform.dtd">
+<html lang="en">
+<head>
+<title>test</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 40px;
+}
+.success {
+background: #d4edda;
+color: #155724;
+padding: 1rem;
+border: 1px solid #c3e6cb;
+border-radius: 4px;
+}
+</style>
+</head>
+<body>
+<h1>Fixna LocalBoost API v1 Postman Collection</h1>
+<div class="success">
+<p>✅ File created successfully: <code>docs/09-postman/fixna-localboost-api-v1.postman_collection.json</code></p>
+<p>📁 Location: <code>c:\Users\Dell\workspace\fixna-localboost\docs\09-postman\</code></p>
+</div>
+<h2>Collection Contents</h2>
+<ul>
+<li><strong>00_AUTH</strong> — register, login, refresh, logout</li>
+<li><strong>01_TENANT</strong> — current tenant, members</li>
+<li><strong>02_CHANNELS</strong> — list, connect, status, disconnect</li>
+<li><strong>03_CAMPAIGNS</strong> — create, list, get, update, transition</li>
+<li><strong>04_GEO_AUDIENCE</strong> — list, add, update, remove geo-targets; list, create, update, delete audiences</li>
+<li><strong>05_AI</strong> — recommendations</li>
+<li><strong>06_BUSINESS_LEADS_ANALYTICS</strong> — business CRUD + locations, leads, analytics dashboard + metrics</li>
+</ul>
+<h2>Collection Variables</h2>
+<ul>
+<li><code>{{baseUrl}}</code> — default: <code>http://localhost:8080</code></li>
+<li><code>{{accessToken}}</code> — JWT access token</li>
+<li><code>{{refreshToken}}</code> — JWT refresh token</li>
+<li><code>{{tenantId}}</code> — current tenant id</li>
+<li><code>{{businessId}}</code> — current business id</li>
+<li><code>{{campaignId}}</code> — current campaign id</li>
+<li><code>{{channel}}</code> — channel type (default: GOOGLE)</li>
+</ul>
+</body>
+</html>

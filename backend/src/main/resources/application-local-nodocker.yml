@@ -1,0 +1,35 @@
+# local-nodocker profile: runs the FULL application without Docker using an
+# embedded PostgreSQL (Zonky native binaries — see EmbeddedPostgresConfig).
+# The schema is identical to production (Flyway V1–V9 + V100 run on startup);
+# data lives in a temp directory and is wiped on every restart.
+# Everything external is mocked: AI provider, advertising adapters; no Redis
+# required (rate limiting is in-memory).
+#
+# Usage:
+#   mvn -f backend/pom.xml spring-boot:run -Dspring-boot.run.profiles=local-nodocker
+#
+# First start downloads the platform PostgreSQL binaries (~40 MB) once; later
+# starts are fast and offline.
+
+spring:
+  flyway:
+    enabled: true
+  autoconfigure:
+    # No-Docker local profile guarantees:
+    # - DataSourceAutoConfiguration excluded + @Primary in
+    #   EmbeddedPostgresConfig -> JPA/Flyway always bind to the embedded
+    #   PostgreSQL; a property-driven pool (localhost:5432 defaults) can
+    #   never be built.
+    # - Redis auto-configuration excluded -> no Redis server is required at
+    #   all (nothing in the MVP codebase uses Redis; rate limiting is
+    #   in-memory), so the actuator Redis health check cannot fail.
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+logging:
+  level:
+    root: INFO
+    in.fixna.platform: DEBUG
+

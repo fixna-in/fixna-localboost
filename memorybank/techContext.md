@@ -6,16 +6,27 @@
   PostgreSQL driver (runtime); Flyway core + Flyway PostgreSQL dialect;
   springdoc-openapi 2.8.13; test: spring-boot-starter-test, Testcontainers
   junit-jupiter + postgresql. GroupId `in.fixna`, artifact `fixna-api`.
-- Frontend (planned, not yet coded): Next.js ^15.5, React ^19.1, TS ^5,
-  Tailwind (per rules), React Hook Form ^7, Zod ^4, TanStack Query ^5,
-  Vitest ^3. `frontend/src` currently only `.gitkeep`.
+- Frontend (implemented): Next.js ^15.5 app router, React ^19.1, TS ^5,
+  axios api-client (ApiError envelope, X-Request-Id, bearer hook),
+  TanStack Query providers (QueryClient, LoadingState, ErrorState,
+  HealthProbe); Tailwind/React Hook Form/Zod/Vitest not yet in
+  package.json.
 - Data: PostgreSQL 17 (docker), Redis 8-alpine, Mailhog (dev mail).
   Backend connects via `SPRING_DATASOURCE_URL` (default
-  `jdbc:postgresql://localhost:5432/fixna`) and `REDIS_URL`.
-- Config: `.env.example` -> `.env`; `JWT_SECRET`, `JWT_ACCESS_EXPIRATION_
-  MINUTES=15`, `JWT_REFRESH_EXPIRATION_DAYS=30`; `AI_PROVIDER=mock`;
-  `GOOGLE_ADS_ENABLED/META_ADS_ENABLED/WHATSAPP_ENABLED=false`;
-  `OTEL_ENABLED=false`, OTLP endpoint localhost:4317.
+  `jdbc:postgresql://localhost:5432/fixna`); Redis via
+  `spring.data.redis.host/port` (`REDIS_HOST`/`REDIS_PORT`); Hikari pool
+  via `DB_POOL_MAX`/`DB_POOL_MIN`/`DB_CONN_TIMEOUT_MS`.
+- Config (WF13): typed settings records — JwtProperties + CorsProperties
+  wired via SecurityConfig @EnableConfigurationProperties; JwtSettings,
+  AiSettings, PlatformSettings present but NOT registered (follow-up);
+  RateLimitFilter/SecurityHeadersFilter bind via @Value keys. Env vars:
+  `FIXNA_JWT_SECRET`, `FIXNA_JWT_ACCESS_TTL` (PT15M),
+  `FIXNA_JWT_REFRESH_TTL` (P7D), `FIXNA_CORS_ALLOWED_ORIGINS`,
+  `FIXNA_RATE_LIMIT_PER_IP_PER_MINUTE`, `FIXNA_HSTS_ENABLED`,
+  `FIXNA_AI_PROVIDER`, `FIXNA_AI_DAILY_QUOTA`, `FIXNA_PLATFORM_MODE`,
+  `FIXNA_BILLING_DEFAULT_PLAN`, `FIXNA_APP_ENV`. Profiles:
+  application-{local,dev,test,staging,prod}.yml; frontend `.env.example`
+  exposes only `NEXT_PUBLIC_API_BASE_URL`/`NEXT_PUBLIC_APP_ENV`.
 - `application.yml`: JPA `open-in-view: false`, `ddl-auto: validate` (Flyway
   owns schema; locations `classpath:db/migration`); server port from
   `SERVER_PORT` (8080); actuator exposes health/info/metrics/prometheus;
@@ -30,7 +41,7 @@ GET /tenants/current, POST /tenants, GET members. Business: CRUD
 Error shape: timestamp, status, code, message, path, requestId. Collections
 paginated. Never expose secrets/stack traces.
 
-## Database (Flyway V1–V6; DB name `fixna`)
+## Database (Flyway V1–V9 + V100 demo seed; DB name `fixna`)
 - V1 tenants/users: `tenants(id,name,tenant_type)`, `users(id,email UNIQUE,
   password_hash,first/last_name)`, `tenant_memberships(id,tenant_id,user_id,
   role, UNIQUE(tenant_id,user_id))` + indexes on user/tenant.
@@ -56,6 +67,9 @@ paginated. Never expose secrets/stack traces.
   estimated_cost,status)`, `subscriptions(tenant_id UNIQUE,plan_code,
   status,starts/ends)`, `audit_logs(id,tenant_id?,user_id?,action,
   resource_type,resource_id,metadata JSONB)`.
+- V7–V9 (WF03/WF06/WF09): `refresh_tokens` (single-use rotation, stored
+  hashes), `ai_usage_log` (usage/cost per recommendation), plan-limit/quota
+  + audit additions.
 - Seed V100: demo tenant `00000000-...-000001` (Urban Cuts SMB), business
   `...-000101` (Urban Cuts Salon, Noida Sec 18), location `...-000201`.
 - Conventions: UUID PKs `gen_random_uuid()`, `timestamptz` timestamps,
@@ -79,16 +93,19 @@ schema + business validation + usage/cost row + timeout/rate-limit/quota.
   `seed-db.sh` (backend Flyway runs migrations).
 - CI `.github/workflows/ci.yml`: backend `mvn -f backend/pom.xml test`
   (Java 21 temurin), frontend npm install+build (node 22).
+- Tests: 178 green (3 skipped = Testcontainers `FixnaEndToEndTest`
+  auto-skip without Docker; full-journey suite via @DynamicPropertySource).
+  Unit/integration suites are infrastructure-free.
 - Infra: nginx placeholder; terraform README only (target cloud undecided).
 - Dockerfiles: backend temurin:21-jre runs built jar; frontend node:22 build.
-- No git repo initialized in workspace as of review; `backend/target/` has a
-  stale built jar from scaffold generation.
+- Repo initialized: `d9bc6bb` (scaffold) + `cc95cc0` (WF03–WF14
+  implementation, HEAD -> master as of 2026-09-15); `backend/target/`
+  stale artifacts ignored.
 
 ## Constraints & quirks to remember
 - PowerShell on Windows: `run_commands` output capture is flaky (truncation,
   "command may still be running", exit code 1 noise) — prefer `read_files`
   for inspection; run one shell command at a time when needed.
-- Backend `ddl-auto: validate` + empty `db/migration/.gitkeep` in resources
-  vs real SQL in `database/migrations/` — must reconcile (copy/link Flyway
-  migrations into resources or configure location) before the app can boot
-  against a fresh DB.
+- RESOLVED: Flyway SQL is canonical at
+  `backend/src/main/resources/db/migration/` (V1–V9 + V100 seed) and runs
+  on boot; `database/migrations/` remains a docs copy that lags behind.

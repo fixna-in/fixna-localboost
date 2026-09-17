@@ -57,8 +57,12 @@ public class ProdEnvironmentValidator implements ApplicationRunner {
     }
 
     private boolean isDefaultRedis() {
-        String redis = environment.getProperty("spring.data.redis.url", "");
-        return redis.isBlank() || redis.contains("localhost");
+        // Base config (WF13) uses spring.data.redis.host/port; keep the
+        // legacy url key as a fallback so either style suppresses the warning.
+        String host = environment.getProperty("spring.data.redis.host", "");
+        String url = environment.getProperty("spring.data.redis.url", "");
+        return (host.isBlank() || host.contains("localhost"))
+                && (url.isBlank() || url.contains("localhost"));
     }
 
     private static IllegalStateException illegal(String message) {

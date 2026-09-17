@@ -49,8 +49,12 @@ public class SecurityConfig {
                 .addFilterBefore(requestIdFilter, SecurityContextHolderFilter.class)
                 .addFilterBefore(requestLoggingFilter, RequestIdFilter.class)
                 .addFilterBefore(securityHeadersFilter, RequestIdFilter.class)
-                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
+                // Register the JWT filter first: custom filters can only be
+                // used as positional references AFTER they have been added to
+                // the chain (otherwise SecurityConfig fails with
+                // "does not have a registered order" at startup).
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
                                 "/api/v1/auth/**",
                                 "/api/v1/health",

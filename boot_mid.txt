@@ -1,0 +1,235 @@
+2026-09-15T19:06:41.995+05:30  INFO 12000 --- [           main] in.fixna.platform.FixnaApplication       : The following 1 profile is active: "local-nodocker"
+2026-09-15T19:06:45.709+05:30  INFO 12000 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-09-15T19:06:45.714+05:30  INFO 12000 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-15T19:06:46.255+05:30  INFO 12000 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 501 ms. Found 18 JPA repository interfaces.
+2026-09-15T19:06:46.288+05:30  INFO 12000 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-09-15T19:06:46.288+05:30  INFO 12000 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-09-15T19:06:46.354+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.ai.AiUsageRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.359+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.analytics.CampaignMetricRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.359+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.audience.AudienceRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.359+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.auth.RefreshTokenRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.359+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.billing.SubscriptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.359+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.business.BusinessLocationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.365+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.business.BusinessRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.365+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.campaign.CampaignChannelRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.367+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.campaign.CampaignOfferRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.369+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.campaign.CampaignRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.369+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.370+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.creative.CreativeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.372+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.geo.GeoTargetRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.372+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.lead.LeadRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.372+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.platform.PlatformConnectionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.372+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.tenant.TenantMembershipRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.372+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.tenant.TenantRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.372+05:30  INFO 12000 --- [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface in.fixna.platform.user.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-09-15T19:06:46.375+05:30  INFO 12000 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 0 Redis repository interfaces.
+2026-09-15T19:06:47.637+05:30  INFO 12000 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-09-15T19:06:47.659+05:30  INFO 12000 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-15T19:06:47.659+05:30  INFO 12000 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2026-09-15T19:06:47.798+05:30  INFO 12000 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-15T19:06:47.798+05:30  INFO 12000 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5693 ms
+2026-09-15T19:06:48.242+05:30  INFO 12000 --- [           main] i.z.t.d.p.embedded.EmbeddedPostgres      : Detected a Windows x86_64 system
+2026-09-15T19:06:48.248+05:30  INFO 12000 --- [           main] .z.t.d.p.e.DefaultPostgresBinaryResolver : Detected distribution: 'Unknown'
+2026-09-15T19:06:48.257+05:30  INFO 12000 --- [           main] .z.t.d.p.e.DefaultPostgresBinaryResolver : System specific postgres binaries found: 'postgres-windows-x86_64.txz'
+2026-09-15T19:06:48.712+05:30  INFO 12000 --- [           main] i.z.t.d.p.embedded.EmbeddedPostgres      : Extracting Postgres...
+2026-09-15T19:07:02.242+05:30  INFO 12000 --- [           main] i.z.t.d.p.embedded.EmbeddedPostgres      : Postgres binaries at C:\Users\Dell\AppData\Local\Temp\embedded-pg\PG-d17a0f9ff85962712d31148068f69f89
+2026-09-15T19:07:06.692+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : The files belonging to this database system will be owned by user "Dell".
+2026-09-15T19:07:06.692+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : This user must also own the server process.
+2026-09-15T19:07:06.692+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : 
+2026-09-15T19:07:06.944+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : The database cluster will be initialized with locale "English_India.1252".
+2026-09-15T19:07:06.944+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : The default text search configuration will be set to "english".
+2026-09-15T19:07:06.944+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : 
+2026-09-15T19:07:06.944+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : Data page checksums are disabled.
+2026-09-15T19:07:06.944+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : 
+2026-09-15T19:07:06.944+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : fixing permissions on existing directory C:/Users/Dell/AppData/Local/Temp/epg13271760083075799891 ... ok
+2026-09-15T19:07:07.006+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : creating subdirectories ... ok
+2026-09-15T19:07:07.017+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : selecting dynamic shared memory implementation ... windows
+2026-09-15T19:07:07.127+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : selecting default "max_connections" ... 100
+2026-09-15T19:07:07.243+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : selecting default "shared_buffers" ... 128MB
+2026-09-15T19:07:07.259+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : selecting default time zone ... Asia/Calcutta
+2026-09-15T19:07:07.280+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : creating configuration files ... ok
+2026-09-15T19:07:09.565+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : running bootstrap script ... ok
+2026-09-15T19:07:17.359+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : performing post-bootstrap initialization ... ok
+2026-09-15T19:07:25.644+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : syncing data to disk ... ok
+2026-09-15T19:07:25.644+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : 
+2026-09-15T19:07:25.644+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : Success. You can now start the database server using:
+2026-09-15T19:07:25.644+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : 
+2026-09-15T19:07:25.644+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      :     ^"C^:^\Users^\Dell^\AppData^\Local^\Temp^\embedded^-pg^\PG^-d17a0f9ff85962712d31148068f69f89^\bin^\pg^_ctl^" -D ^"C^:^\Users^\Dell^\AppData^\Local^\Temp^\epg13271760083075799891^" -l logfile start
+2026-09-15T19:07:25.644+05:30  INFO 12000 --- [nitdb:pid(2392)] i.z.t.d.p.embedded.EmbeddedPostgres      : 
+2026-09-15T19:07:25.660+05:30  INFO 12000 --- [           main] i.z.t.d.p.embedded.EmbeddedPostgres      : cfd826ae-d961-4ae9-8204-d85c2800a6e4 initdb completed in 00:00:23.408
+2026-09-15T19:07:25.803+05:30  INFO 12000 --- [           main] i.z.t.d.p.embedded.EmbeddedPostgres      : cfd826ae-d961-4ae9-8204-d85c2800a6e4 postmaster started as Process[pid=5924, exitValue="not exited"] on port 57150.  Waiting up to PT10S for server startup to finish.
+2026-09-15T19:07:26.259+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : waiting for server to start....2026-09-15 19:07:26.270 IST [5616] LOG:  starting PostgreSQL 17.1 on x86_64-windows, compiled by msvc-19.41.34123, 64-bit
+2026-09-15T19:07:26.278+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:26.279 IST [5616] LOG:  listening on IPv6 address "::1", port 57150
+2026-09-15T19:07:26.279+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:26.279 IST [5616] LOG:  listening on IPv4 address "127.0.0.1", port 57150
+2026-09-15T19:07:26.733+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:26.737 IST [11996] LOG:  database system was shut down at 2026-09-15 19:07:17 IST
+2026-09-15T19:07:26.849+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:26.853 IST [5616] LOG:  database system is ready to accept connections
+2026-09-15T19:07:26.871+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:26.874 IST [15836] FATAL:  the database system is starting up
+2026-09-15T19:07:26.935+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      :  done
+2026-09-15T19:07:26.935+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : server started
+2026-09-15T19:07:27.264+05:30  INFO 12000 --- [           main] i.z.t.d.p.embedded.EmbeddedPostgres      : cfd826ae-d961-4ae9-8204-d85c2800a6e4 postmaster startup finished in 00:00:01.597
+2026-09-15T19:07:27.740+05:30  INFO 12000 --- [           main] com.zaxxer.hikari.HikariDataSource       : embedded-postgres - Starting...
+2026-09-15T19:07:28.038+05:30  INFO 12000 --- [           main] com.zaxxer.hikari.pool.HikariPool        : embedded-postgres - Added connection org.postgresql.jdbc.PgConnection@27a90ce5
+2026-09-15T19:07:28.046+05:30  INFO 12000 --- [           main] com.zaxxer.hikari.HikariDataSource       : embedded-postgres - Start completed.
+2026-09-15T19:07:28.134+05:30  INFO 12000 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:57150/postgres?loginTimeout=30 (PostgreSQL 17.1)
+2026-09-15T19:07:28.433+05:30  INFO 12000 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-09-15T19:07:28.433+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 9 migrations (execution time 00:00.248s)
+2026-09-15T19:07:28.468+05:30  INFO 12000 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-09-15T19:07:28.581+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-09-15T19:07:28.602+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - create tenants users"
+2026-09-15T19:07:29.481+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "2 - create businesses"
+2026-09-15T19:07:29.525+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "3 - create campaigns"
+2026-09-15T19:07:29.582+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "4 - create targeting creatives"
+2026-09-15T19:07:29.645+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "5 - create platform analytics leads"
+2026-09-15T19:07:29.695+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "6 - create ai billing audit"
+2026-09-15T19:07:29.759+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "7 - create refresh tokens"
+2026-09-15T19:07:29.788+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "8 - create ai usage log"
+2026-09-15T19:07:29.804+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "9 - plans and ai quota"
+2026-09-15T19:07:29.835+05:30  INFO 12000 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 9 migrations to schema "public", now at version v9 (execution time 00:01.091s)
+2026-09-15T19:07:30.135+05:30  INFO 12000 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-15T19:07:30.325+05:30  INFO 12000 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2026-09-15T19:07:30.433+05:30  INFO 12000 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-15T19:07:31.334+05:30  INFO 12000 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-15T19:07:31.599+05:30  INFO 12000 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (embedded-postgres)']
+	Database driver: undefined/unknown
+	Database version: 17.1
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-15T19:07:35.072+05:30  INFO 12000 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-15T19:07:35.224+05:30  INFO 12000 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-15T19:07:35.953+05:30 ERROR 12000 --- [           main] o.s.b.web.embedded.tomcat.TomcatStarter  : Error starting Tomcat context. Exception: org.springframework.beans.factory.BeanCreationException. Message: Error creating bean with name 'rateLimitFilter' defined in file [C:\Users\Dell\workspace\fixna-localboost\backend\target\classes\in\fixna\platform\common\web\RateLimitFilter.class]: Failed to instantiate [in.fixna.platform.common.web.RateLimitFilter]: No default constructor found
+2026-09-15T19:07:36.030+05:30  INFO 12000 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-09-15T19:07:36.054+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-1] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.055+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-2] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.057+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-3] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.057+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-4] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.057+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-5] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.060+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-6] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.060+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-7] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.060+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-8] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.060+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [Thread-9] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/sun.nio.ch.Iocp.getQueuedCompletionStatus(Native Method)
+ java.base/sun.nio.ch.Iocp$EventHandlerTask.run(Iocp.java:323)
+ java.base/sun.nio.ch.AsynchronousChannelGroupImpl$1.run(AsynchronousChannelGroupImpl.java:113)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.060+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [postgres:pid(5924)] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/java.io.FileInputStream.readBytes(Native Method)
+ java.base/java.io.FileInputStream.read(FileInputStream.java:287)
+ java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:345)
+ java.base/java.io.BufferedInputStream.implRead(BufferedInputStream.java:420)
+ java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:399)
+ java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:350)
+ java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:393)
+ java.base/sun.nio.cs.StreamDecoder.lockedRead(StreamDecoder.java:217)
+ java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:171)
+ java.base/java.io.InputStreamReader.read(InputStreamReader.java:188)
+ java.base/java.io.BufferedReader.fill(BufferedReader.java:160)
+ java.base/java.io.BufferedReader.implReadLine(BufferedReader.java:370)
+ java.base/java.io.BufferedReader.readLine(BufferedReader.java:347)
+ java.base/java.io.BufferedReader.readLine(BufferedReader.java:436)
+ java.base/java.io.BufferedReader$1.hasNext(BufferedReader.java:681)
+ java.base/java.util.Iterator.forEachRemaining(Iterator.java:132)
+ java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+ java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+ io.zonky.test.db.postgres.embedded.ProcessOutputLogger.run(ProcessOutputLogger.java:52)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.060+05:30  WARN 12000 --- [           main] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [embedded-postgres:housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:269)
+ java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1763)
+ java.base/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1070)
+ java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+ java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+ java.base/java.lang.Thread.run(Thread.java:1583)
+2026-09-15T19:07:36.069+05:30  WARN 12000 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+2026-09-15T19:07:36.069+05:30  INFO 12000 --- [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-15T19:07:36.076+05:30  INFO 12000 --- [           main] com.zaxxer.hikari.HikariDataSource       : embedded-postgres - Shutdown initiated...
+2026-09-15T19:07:36.114+05:30  INFO 12000 --- [           main] com.zaxxer.hikari.HikariDataSource       : embedded-postgres - Shutdown completed.
+2026-09-15T19:07:36.301+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:36.305 IST [5616] LOG:  received fast shutdown request
+2026-09-15T19:07:36.301+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:36.305 IST [5616] LOG:  aborting any active transactions
+2026-09-15T19:07:36.339+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:36.341 IST [5616] LOG:  background worker "logical replication launcher" (PID 11476) exited with exit code 1
+2026-09-15T19:07:36.370+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:36.371 IST [1292] LOG:  shutting down
+2026-09-15T19:07:36.370+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:36.372 IST [1292] LOG:  checkpoint starting: shutdown immediate
+2026-09-15T19:07:36.465+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:36.466 IST [1292] LOG:  checkpoint complete: wrote 165 buffers (1.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.074 s, sync=0.001 s, total=0.095 s; sync files=0, longest=0.000 s, average=0.000 s; distance=1012 kB, estimate=1012 kB; lsn=0/166A4C0, redo lsn=0/166A4C0
+2026-09-15T19:07:36.549+05:30  INFO 12000 --- [tgres:pid(5924)] i.z.t.d.p.embedded.EmbeddedPostgres      : 2026-09-15 19:07:36.550 IST [5616] LOG:  database system is shut down
+2026-09-15T19:07:36.643+05:30  INFO 12000 --- [_ctl:pid(16632)] i.z.t.d.p.embedded.EmbeddedPostgres      : waiting for server to shut down.... done
+2026-09-15T19:07:36.643+05:30  INFO 12000 --- [_ctl:pid(16632)] i.z.t.d.p.embedded.EmbeddedPostgres      : server stopped
+2026-09-15T19:07:36.645+05:30  INFO 12000 --- [           main] i.z.t.d.p.embedded.EmbeddedPostgres      : cfd826ae-d961-4ae9-8204-d85c2800a6e4 shut down postmaster in 00:00:00.532
+2026-09-15T19:07:37.822+05:30  INFO 12000 --- [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-09-15T19:07:37.869+05:30 ERROR 12000 --- [           main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.context.ApplicationContextException: Unable to start web server
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:170) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-6.2.11.jar:6.2.11]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.5.6.jar:3.5.6]
+	at in.fixna.platform.FixnaApplication.main(FixnaApplication.java:9) ~[classes/:na]
+Caused by: org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:147) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:517) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:219) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:193) ~[spring-boot-3.5.6.jar:3.5.6]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:167) ~[spring-boot-3.5.6.jar:3.5.6]
+	... 8 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'rateLimitFilter' defined in file [C:\Users\Dell\workspace\fixna-localboost\backend\target\classes\in\fixna\platform\common\web\RateLimitFilter.class]: Failed to instantiate [in.fixna.platform.common.web.RateLimitFilter]: No default constructor found
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1357) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1242) ~[spring-beans-6.2.11.jar:6.2.11]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.11.jar:6.2.11]

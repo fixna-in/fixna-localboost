@@ -1,0 +1,75 @@
+in\fixna\platform\admin\AdminController.java:32:@RequestMapping("/api/v1/admin")
+in\fixna\platform\admin\AdminController.java:45:    @GetMapping("/tenants")
+in\fixna\platform\admin\AdminController.java:53:    @GetMapping("/tenants/{tenantId}/members")
+in\fixna\platform\admin\AdminController.java:59:    @PutMapping("/tenants/{tenantId}/plan")
+in\fixna\platform\ai\AiController.java:25:@RequestMapping("/api/v1/ai")
+in\fixna\platform\ai\AiController.java:36:    @PostMapping("/recommendations")
+in\fixna\platform\analytics\AnalyticsController.java:30:@RequestMapping("/api/v1/analytics")
+in\fixna\platform\analytics\AnalyticsController.java:41:    @GetMapping("/dashboard")
+in\fixna\platform\analytics\AnalyticsController.java:49:    @GetMapping("/campaigns/{campaignId}")
+in\fixna\platform\analytics\AnalyticsController.java:58:    @PostMapping("/campaigns/{campaignId}/metrics")
+in\fixna\platform\analytics\AnalyticsController.java:66:    @PostMapping("/demo-seed")
+in\fixna\platform\audience\AudienceController.java:27:@RequestMapping("/api/v1/campaigns/{campaignId}/audiences")
+in\fixna\platform\audience\AudienceController.java:38:    @GetMapping
+in\fixna\platform\audience\AudienceController.java:44:    @PostMapping
+in\fixna\platform\audience\AudienceController.java:52:    @PutMapping("/{audienceId}")
+in\fixna\platform\audience\AudienceController.java:61:    @DeleteMapping("/{audienceId}")
+in\fixna\platform\auth\AuthController.java:28:@RequestMapping("/api/v1/auth")
+in\fixna\platform\auth\AuthController.java:39:    @PostMapping("/register")
+in\fixna\platform\auth\AuthController.java:45:    @PostMapping("/login")
+in\fixna\platform\auth\AuthController.java:51:    @PostMapping("/refresh")
+in\fixna\platform\auth\AuthController.java:57:    @PostMapping("/logout")
+in\fixna\platform\billing\BillingController.java:18:@RequestMapping("/api/v1/subscriptions")
+in\fixna\platform\billing\BillingController.java:31:    @GetMapping("/current")
+in\fixna\platform\business\BusinessController.java:32:@RequestMapping("/api/v1/businesses")
+in\fixna\platform\business\BusinessController.java:43:    @GetMapping
+in\fixna\platform\business\BusinessController.java:49:    @PostMapping
+in\fixna\platform\business\BusinessController.java:55:    @GetMapping("/{id}")
+in\fixna\platform\business\BusinessController.java:61:    @PutMapping("/{id}")
+in\fixna\platform\business\BusinessController.java:68:    @DeleteMapping("/{id}")
+in\fixna\platform\business\BusinessController.java:75:    @GetMapping("/{id}/locations")
+in\fixna\platform\business\BusinessController.java:81:    @PostMapping("/{id}/locations")
+in\fixna\platform\campaign\CampaignController.java:36:@RequestMapping("/api/v1/campaigns")
+in\fixna\platform\campaign\CampaignController.java:47:    @GetMapping
+in\fixna\platform\campaign\CampaignController.java:53:    @PostMapping
+in\fixna\platform\campaign\CampaignController.java:59:    @GetMapping("/{id}")
+in\fixna\platform\campaign\CampaignController.java:65:    @PutMapping("/{id}")
+in\fixna\platform\campaign\CampaignController.java:72:    @DeleteMapping("/{id}")
+in\fixna\platform\campaign\CampaignController.java:79:    @PostMapping("/{id}/transitions")
+in\fixna\platform\campaign\CampaignController.java:86:    @PostMapping("/{id}/launch")
+in\fixna\platform\campaign\CampaignController.java:92:    @PostMapping("/{id}/offers")
+in\fixna\platform\campaign\CampaignController.java:99:    @GetMapping("/{id}/offers")
+in\fixna\platform\campaign\CampaignController.java:105:    @PutMapping("/{id}/channels")
+in\fixna\platform\campaign\CampaignController.java:112:    @GetMapping("/{id}/channels")
+in\fixna\platform\campaign\CampaignLaunchController.java:21:@RequestMapping("/api/v1/campaigns")
+in\fixna\platform\campaign\CampaignLaunchController.java:32:    @PostMapping("/{id}/execute-launch")
+in\fixna\platform\common\audit\AuditController.java:32:    @GetMapping("/api/v1/audit")
+in\fixna\platform\common\audit\AuditController.java:41:    @GetMapping("/api/v1/admin/audit")
+in\fixna\platform\common\web\HealthController.java:19:@RequestMapping("/api/v1/health")
+in\fixna\platform\common\web\HealthController.java:29:    @GetMapping
+in\fixna\platform\common\web\ReadinessController.java:21:@RequestMapping("/api/v1/health")
+in\fixna\platform\common\web\ReadinessController.java:35:    @GetMapping("/readiness")
+in\fixna\platform\creative\CreativeController.java:31:@RequestMapping("/api/v1/campaigns/{campaignId}/creatives")
+in\fixna\platform\creative\CreativeController.java:42:    @GetMapping
+in\fixna\platform\creative\CreativeController.java:48:    @PostMapping
+in\fixna\platform\creative\CreativeController.java:56:    @PutMapping("/{creativeId}")
+in\fixna\platform\creative\CreativeController.java:65:    @DeleteMapping("/{creativeId}")
+in\fixna\platform\geo\GeoTargetController.java:27:@RequestMapping("/api/v1/campaigns/{campaignId}/geo-targets")
+in\fixna\platform\geo\GeoTargetController.java:38:    @GetMapping
+in\fixna\platform\geo\GeoTargetController.java:44:    @PostMapping
+in\fixna\platform\geo\GeoTargetController.java:51:    @PutMapping("/{targetId}")
+in\fixna\platform\geo\GeoTargetController.java:60:    @DeleteMapping("/{targetId}")
+in\fixna\platform\lead\LeadController.java:42:    @PostMapping("/api/v1/businesses/{businessId}/leads")
+in\fixna\platform\lead\LeadController.java:49:    @GetMapping("/api/v1/leads")
+in\fixna\platform\lead\LeadController.java:60:    @GetMapping("/api/v1/leads/{id}")
+in\fixna\platform\lead\LeadController.java:66:    @PatchMapping("/api/v1/leads/{id}/status")
+in\fixna\platform\lead\LeadController.java:73:    @DeleteMapping("/api/v1/leads/{id}")
+in\fixna\platform\platform\PlatformConnectionController.java:28:@RequestMapping("/api/v1/platform-connections")
+in\fixna\platform\platform\PlatformConnectionController.java:39:    @GetMapping
+in\fixna\platform\platform\PlatformConnectionController.java:45:    @PostMapping
+in\fixna\platform\platform\PlatformConnectionController.java:52:    @DeleteMapping("/{platform}")
+in\fixna\platform\tenant\TenantController.java:29:@RequestMapping("/api/v1/tenants")
+in\fixna\platform\tenant\TenantController.java:40:    @GetMapping("/current")
+in\fixna\platform\tenant\TenantController.java:46:    @PostMapping
+in\fixna\platform\tenant\TenantController.java:52:    @GetMapping("/current/members")
+in\fixna\platform\tenant\TenantController.java:58:    @DeleteMapping("/current/members/{userId}")

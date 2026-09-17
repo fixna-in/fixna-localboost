@@ -1,0 +1,1 @@
+<!-- WF13 was verified 2026-09-15: 178 backend tests green + frontend build EXIT-0; committed as cc95cc0 -->
