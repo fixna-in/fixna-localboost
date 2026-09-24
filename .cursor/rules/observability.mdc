@@ -1,0 +1,15 @@
+---
+description: Structured logging, tracing, and metrics conventions
+globs: backend/src/main/java/**/common/**
+alwaysApply: false
+---
+
+# Observability Rules
+
+Use structured logs and OpenTelemetry-ready tracing.
+Correlation fields where applicable:
+requestId, tenantId, userId, businessId, campaignId, platform, operation,
+status, durationMs.
+
+Never log secrets, OAuth tokens, passwords or raw sensitive customer data.
+Provide health/readiness endpoints and metrics for important operations.

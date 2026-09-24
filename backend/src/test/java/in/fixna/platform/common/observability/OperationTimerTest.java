@@ -1,12 +1,17 @@
 package in.fixna.platform.common.observability;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import in.fixna.platform.common.tenant.TenantContext;
 
@@ -16,18 +21,18 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 /** Operation timer emits one safe, structured telemetry line on close. */
 class OperationTimerTest {
 
-    private final ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    private final CapturingAppender appender = new CapturingAppender();
 
     @BeforeEach
     void setUp() {
         TenantContext.clear(); // never leak scope between tests
         appender.start();
-        ((Logger) LoggerFactory.getLogger("fixna.telemetry")).addAppender(appender);
+        attach(appender);
     }
 
     @AfterEach
     void tearDown() {
-        ((Logger) LoggerFactory.getLogger("fixna.telemetry")).detachAndStopAllAppenders();
+        detach(appender);
         TenantContext.clear();
     }
 
@@ -37,12 +42,12 @@ class OperationTimerTest {
             timer.status("SUCCESS");
         }
 
-        assertThat(appender.list).hasSize(1);
-        String line = appender.list.get(0).getFormattedMessage();
+        assertThat(appender.messages).hasSize(1);
+        String line = appender.messages.get(0);
         assertThat(line).contains("operation=ai.recommend");
         assertThat(line).contains("status=SUCCESS");
         assertThat(line).contains("entity=campaign:00000000-0000-0000-0000-000000000001");
-        assertThat(line).matches(".*durationMs=\\d+.*");
+        assertThat(line).matches("(?s).*durationMs=\\d+.*");
     }
 
     @Test
@@ -54,8 +59,8 @@ class OperationTimerTest {
             }
         }).doesNotThrowAnyException();
 
-        assertThat(appender.list).hasSize(1);
-        String line = appender.list.get(0).getFormattedMessage();
+        assertThat(appender.messages).hasSize(1);
+        String line = appender.messages.get(0);
         assertThat(line).contains("platform=GOOGLE");
         assertThat(line).contains("status=FAILED");
         assertThat(line).contains("requestId=null");
@@ -72,6 +77,36 @@ class OperationTimerTest {
             second.close();
         }).doesNotThrowAnyException();
 
-        assertThat(appender.list).hasSize(2);
+        assertThat(appender.messages).hasSize(2);
+    }
+
+    private static void attach(CapturingAppender appender) {
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        LoggerConfig config = context.getConfiguration().getLoggerConfig("fixna.telemetry");
+        config.addAppender(appender, null, null);
+        context.updateLoggers();
+    }
+
+    private static void detach(CapturingAppender appender) {
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        LoggerConfig config = context.getConfiguration().getLoggerConfig("fixna.telemetry");
+        config.removeAppender(appender.getName());
+        context.updateLoggers();
+        appender.stop();
+    }
+
+    /** Minimal Log4j2 appender capturing formatted messages for assertions. */
+    private static final class CapturingAppender extends AbstractAppender {
+
+        private final List<String> messages = new CopyOnWriteArrayList<>();
+
+        CapturingAppender() {
+            super("test-capturing", null, PatternLayout.createDefaultLayout(), false, null);
+        }
+
+        @Override
+        public void append(LogEvent event) {
+            messages.add(event.getMessage().getFormattedMessage());
+        }
     }
 }

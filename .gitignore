@@ -5,6 +5,11 @@ backend/target/
 # Node
 frontend/node_modules/
 frontend/.next/
+frontend/tsconfig.tsbuildinfo
+
+# Agent / local scratch
+*.exit.txt
+css-check-result.txt
 
 # Environment
 .env

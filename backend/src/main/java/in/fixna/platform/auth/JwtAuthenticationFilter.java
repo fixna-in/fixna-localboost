@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import in.fixna.platform.common.logging.LoggingContext;
 import in.fixna.platform.common.tenant.AuthenticatedUser;
 import in.fixna.platform.common.tenant.TenantContext;
 import in.fixna.platform.common.web.ApiError;
@@ -56,6 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String token = header.substring(7).trim();
                 if (!token.isEmpty()) {
                     authenticate(token);
+                    LoggingContext.putTenantAndUser();
                 }
             }
             chain.doFilter(request, response);
@@ -103,7 +105,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/api/v1/auth/")
+        return path.equals("/api/v1/auth/register")
+                || path.equals("/api/v1/auth/login")
+                || path.equals("/api/v1/auth/refresh")
                 || path.startsWith("/actuator/")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-ui")

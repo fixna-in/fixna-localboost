@@ -1,0 +1,15 @@
+---
+description: REST API design and OpenAPI conventions
+globs: backend/src/main/java/**/*Controller.java
+alwaysApply: false
+---
+
+# API Rules
+
+Base path: /api/v1
+JSON REST APIs.
+Use validation and consistent errors:
+timestamp, status, code, message, path, requestId.
+Never expose secrets, credentials or internal stack traces.
+Use pagination for collection endpoints.
+Document APIs in OpenAPI.

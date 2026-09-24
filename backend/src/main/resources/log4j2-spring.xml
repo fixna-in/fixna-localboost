@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fixna LocalBoost Log4j2 configuration (Spring Boot aware).
+
+  Effective implementation: SLF4J API -> Log4j2 (via spring-boot-starter-log4j2).
+  Spring Boot default Logback is excluded in backend/pom.xml.
+
+  Profiles:
+    local / test / default -> human-readable PatternLayout on stdout.
+    dev / staging / prod  -> structured JSON (JsonLayout) on stdout for
+      ELK / OpenSearch / Loki / Datadog / CloudWatch / Azure Monitor.
+
+  Service / environment identifiers are resolved via Spring lookups with
+  environment fallbacks so nothing production-specific is hardcoded:
+    service     = spring.application.name (default fixna-localboost-backend)
+    environment = fixna.app-env / FIXNA_APP_ENV (default unknown)
+
+  Correlation (MDC) keys are populated by the application (see
+  in.fixna.platform.common.logging.LoggingContext):
+    traceId, spanId, requestId, tenantId, userId, campaignId, operation.
+  No trace system is created here: when OpenTelemetry is added, its
+  trace/span ids must be copied into the same MDC keys (documented in
+  docs/logging.md).
+-->
+<Configuration status="WARN" monitorInterval="30">
+  <Properties>
+    <Property name="SERVICE_NAME">${spring:spring.application.name:-fixna-localboost-backend}</Property>
+    <Property name="APP_ENV">${spring:fixna.app-env:-${env:FIXNA_APP_ENV:-unknown}}</Property>
+  </Properties>
+
+  <Appenders>
+    <!-- Local / test / default: human-readable single-line logs. -->
+    <SpringProfile name="!dev &amp; !staging &amp; !prod">
+      <Console name="Console" target="SYSTEM_OUT" follow="true">
+        <PatternLayout
+          pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [traceId=%X{traceId} spanId=%X{spanId} requestId=%X{requestId} tenantId=%X{tenantId} userId=%X{userId} campaignId=%X{campaignId} operation=%X{operation}] %c{1} - %msg%n%ex{short}" />
+      </Console>
+    </SpringProfile>
+
+    <!-- dev / staging / prod: structured JSON on stdout (container/cloud collection). -->
+    <SpringProfile name="dev, staging, prod">
+      <Console name="Console" target="SYSTEM_OUT" follow="true">
+        <JsonLayout complete="false" compact="true" eventEol="true"
+                    properties="true" stacktraceAsString="true">
+          <KeyValuePair key="service" value="${SERVICE_NAME}" />
+          <KeyValuePair key="environment" value="${APP_ENV}" />
+        </JsonLayout>
+      </Console>
+    </SpringProfile>
+  </Appenders>
+
+  <Loggers>
+    <!-- Application diagnostics; levels remain overridable via logging.level.* properties. -->
+    <Logger name="in.fixna.platform" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <!-- Structured operational categories (see docs/logging.md). -->
+    <Logger name="fixna.access" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.audit" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.telemetry" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.error" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.ratelimit" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.notify" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <!-- Quiet noisy third-party categories; never SQL parameters. -->
+    <Logger name="org.hibernate.SQL" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="org.hibernate.orm.jdbc.bind" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="org.springframework.security" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Root level="info">
+      <AppenderRef ref="Console" />
+    </Root>
+  </Loggers>
+</Configuration>

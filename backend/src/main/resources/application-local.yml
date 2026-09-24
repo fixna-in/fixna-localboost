@@ -1,8 +1,27 @@
-# Local development profile (docker compose services on localhost).
-# Inherits safe defaults from application.yml; DEBUG diagnostics for the
-# Fixna packages only. All secrets remain the dev placeholders — never use
-# this profile for shared deployments.
+# Single local profile: persistent PostgreSQL installed on localhost.
+# Supply POSTGRES_PASSWORD at runtime; never commit database credentials.
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/localboost
+    username: postgres
+    password: ${POSTGRES_PASSWORD}
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+# Schema migrations/validation are inherited; demo data is loaded separately.
+fixna:
+  test-data:
+    enabled: false
+
+management:
+  otlp:
+    tracing:
+      export:
+        enabled: false
 logging:
   level:
     root: INFO
     in.fixna.platform: DEBUG
+

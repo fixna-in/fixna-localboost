@@ -47,16 +47,18 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint)
                         .accessDeniedHandler(deniedHandler))
                 .addFilterBefore(requestIdFilter, SecurityContextHolderFilter.class)
-                .addFilterBefore(requestLoggingFilter, RequestIdFilter.class)
                 .addFilterBefore(securityHeadersFilter, RequestIdFilter.class)
-                // Register the JWT filter first: custom filters can only be
-                // used as positional references AFTER they have been added to
-                // the chain (otherwise SecurityConfig fails with
-                // "does not have a registered order" at startup).
+                // Order matters: JWT first (sets TenantContext + tenant/user MDC),
+                // then rate limiting (runs authenticated), then the access log so
+                // the single fixna.access line sees requestId/tenant/user MDC.
+                // JWT must be registered before it can be used as a reference.
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
-                                "/api/v1/auth/**",
+                                "/api/v1/auth/register",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/refresh",
                                 "/api/v1/health",
                                 "/actuator/health",
                                 "/actuator/info",

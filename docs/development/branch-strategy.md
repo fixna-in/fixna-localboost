@@ -50,13 +50,13 @@ or
 
 ## Recommended MVP workflow
 
-For a solo developer using Cline:
+For a solo developer using Cursor:
 
 ```text
 feature/xyz
     |
     | local development
-    | Cline + VS Code
+    | Cursor IDE
     | Maven / npm validation
     v
   push

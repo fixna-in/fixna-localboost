@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import in.fixna.platform.campaign.dto.ChannelAllocationResponse;
 import in.fixna.platform.campaign.dto.TransitionRequest;
 import in.fixna.platform.common.audit.AuditEvent;
 import in.fixna.platform.common.audit.AuditPublisher;
+import in.fixna.platform.common.logging.LoggingConstants;
+import in.fixna.platform.common.logging.LoggingContext;
 import in.fixna.platform.common.tenant.TenantContext;
 import in.fixna.platform.common.web.FixnaException;
 
@@ -31,6 +35,8 @@ import in.fixna.platform.common.web.FixnaException;
  */
 @Service
 public class CampaignService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CampaignService.class);
 
     private final CampaignRepository campaigns;
     private final CampaignOfferRepository offers;
@@ -76,6 +82,9 @@ public class CampaignService {
         campaign.setBusinessId(business.getId());
         apply(campaign, request);
         campaigns.save(campaign);
+        LoggingContext.putOperation(LoggingConstants.CAMPAIGN_CREATE);
+        LoggingContext.putCampaignId(campaign.getId());
+        LOG.info("Campaign created successfully campaignId={} tenantId={}", campaign.getId(), tenantId);
         audit.publish(new AuditEvent(
                 "campaign.created", tenantId, TenantContext.requireUserId(), "campaign",
                 campaign.getId().toString(), Map.of("business", business.getId().toString()), null));
@@ -102,6 +111,7 @@ public class CampaignService {
         campaign.setBusinessId(business.getId());
         apply(campaign, request);
         campaigns.save(campaign);
+        LOG.info("Campaign updated campaignId={} status={}", campaign.getId(), campaign.getStatus());
         audit.publish(new AuditEvent(
                 "campaign.updated", campaign.getTenantId(), TenantContext.requireUserId(), "campaign",
                 campaign.getId().toString(), Map.of(), null));
@@ -147,12 +157,16 @@ public class CampaignService {
                     "ILLEGAL_TRANSITION", HttpStatus.CONFLICT,
                     "Cannot transition campaign from " + campaign.getStatus() + " to " + target);
         }
+        CampaignStatus from = campaign.getStatus();
         campaign.setStatus(target);
         campaigns.save(campaign);
+        LoggingContext.putCampaignId(campaign.getId());
+        LoggingContext.putOperation(operationForTransition(target));
+        LOG.info("Campaign transitioned campaignId={} from={} to={}", campaign.getId(), from, target);
         audit.publish(new AuditEvent(
                 "campaign.transitioned", campaign.getTenantId(), TenantContext.requireUserId(),
                 "campaign", campaign.getId().toString(),
-                Map.of("from", campaign.getStatus().name(), "to", target.name()), null));
+                Map.of("from", from.name(), "to", target.name()), null));
         return CampaignResponse.from(campaign);
     }
 
@@ -171,6 +185,10 @@ public class CampaignService {
             case APPROVED, FAILED -> {
                 campaign.setStatus(CampaignStatus.QUEUED);
                 campaigns.save(campaign);
+                LoggingContext.putOperation(LoggingConstants.CAMPAIGN_LAUNCH);
+                LoggingContext.putCampaignId(campaign.getId());
+                LOG.info("Campaign launch queued campaignId={} externalReference={}",
+                        campaign.getId(), campaign.getExternalReference());
                 audit.publish(new AuditEvent(
                         "campaign.launch_requested", campaign.getTenantId(), TenantContext.requireUserId(),
                         "campaign", campaign.getId().toString(),
@@ -178,11 +196,16 @@ public class CampaignService {
                 return CampaignResponse.from(campaign);
             }
             case QUEUED, CREATING, ACTIVE, PAUSED -> {
+                LOG.debug("Campaign launch already in progress campaignId={} status={}",
+                        campaign.getId(), campaign.getStatus());
                 return CampaignResponse.from(campaign);
             }
-            default -> throw new FixnaException(
-                    "NOT_APPROVED", HttpStatus.CONFLICT,
-                    "Campaign must be APPROVED before launch (current: " + campaign.getStatus() + ")");
+            default -> {
+                LOG.warn("Campaign launch rejected campaignId={} status={}", campaign.getId(), campaign.getStatus());
+                throw new FixnaException(
+                        "NOT_APPROVED", HttpStatus.CONFLICT,
+                        "Campaign must be APPROVED before launch (current: " + campaign.getStatus() + ")");
+            }
         }
     }
 
@@ -305,5 +328,15 @@ public class CampaignService {
                 .findByIdAndTenantId(businessId, tenantId)
                 .orElseThrow(() -> new FixnaException(
                         "BUSINESS_NOT_FOUND", HttpStatus.NOT_FOUND, "Business not found"));
+    }
+
+    /** Stable operation name for transition logs (approve/pause/complete fallbacks). */
+    private static String operationForTransition(CampaignStatus target) {
+        return switch (target) {
+            case APPROVED -> LoggingConstants.CAMPAIGN_APPROVE;
+            case PAUSED -> LoggingConstants.CAMPAIGN_PAUSE;
+            case COMPLETED -> LoggingConstants.CAMPAIGN_COMPLETE;
+            default -> LoggingConstants.CAMPAIGN_UPDATE;
+        };
     }
 }

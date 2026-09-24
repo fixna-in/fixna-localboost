@@ -21,8 +21,9 @@ import in.fixna.platform.common.observability.TelemetryContext;
  * {@code method=POST path=/api/v1/campaigns status=201 durationMs=12
  * requestId=... tenantId=... userId=...}. Only the request URI is logged —
  * never query strings, headers, bodies, tokens or credentials. Registered
- * outermost in the security chain so the final status (and total wall time,
- * filters included) is captured in {@code finally}.
+ * inside the JWT filter in the security chain so tenant/user MDC set during
+ * authentication is visible, and the final status (total wall time, filters
+ * included) is still captured in {@code finally}.
  */
 @Component
 public class RequestLoggingFilter extends OncePerRequestFilter {

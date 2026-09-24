@@ -15,6 +15,7 @@ import in.fixna.platform.auth.dto.LoginRequest;
 import in.fixna.platform.auth.dto.RefreshRequest;
 import in.fixna.platform.auth.dto.RegisterRequest;
 import in.fixna.platform.common.tenant.AuthenticatedUser;
+import in.fixna.platform.common.web.FixnaException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,9 +54,15 @@ public class AuthController {
         return ResponseEntity.ok(authService.refresh(request.refreshToken()));
     }
 
-    @Operation(summary = "Logout — revokes all refresh tokens")
+    @Operation(summary = "Logout — revokes all refresh tokens",
+            description = "Requires a Bearer access token and active tenant membership. "
+                    + "Returns 204 on success, 401 for missing/invalid authentication, "
+                    + "or 403 for revoked membership.")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@AuthenticationPrincipal AuthenticatedUser principal) {
+        if (principal == null) {
+            throw new FixnaException("UNAUTHORIZED", HttpStatus.UNAUTHORIZED, "Authentication required");
+        }
         authService.logout(principal.userId(), principal.tenantId());
         return ResponseEntity.noContent().build();
     }

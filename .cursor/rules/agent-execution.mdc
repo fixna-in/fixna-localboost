@@ -1,0 +1,58 @@
+---
+description: Agent command execution, build verification, and CI workflow rules
+alwaysApply: true
+---
+
+# Agent Execution Rules
+
+## Command execution
+After executing a command:
+1. Inspect the command result and exit code.
+2. If exit code is 0, treat the command as successful.
+3. Do not repeatedly read generated log files to determine success.
+4. Never perform the same file-read operation more than once unless new information indicates the file changed.
+5. If a log is needed, read the relevant section once.
+6. Prefer terminal output and exit codes over repeatedly reading redirected logs.
+7. If a command succeeds, continue with the workflow.
+8. If a command fails, diagnose the actual failure before modifying code.
+
+## Loop prevention
+Never repeat an identical tool call more than once.
+If the same information has already been retrieved, use the existing result,
+inspect another relevant file, run a targeted command, or ask for guidance.
+
+## Build verification
+A build is successful when: exit code 0, terminal returns to shell, no build error reported.
+Do not require additional log-file inspection when these conditions are satisfied.
+
+## Local validation
+- Backend changes: `mvn -f backend/pom.xml test`
+- Frontend changes: `npm install` when dependencies changed, then `npm run build`
+- Full milestone/PR validation: run both backend tests and frontend build.
+
+Treat exit code 0 as successful unless there is direct evidence of a functional problem.
+If a command fails, inspect the actual error, make the smallest reasonable fix, and rerun.
+Do not change unrelated files merely to make CI green.
+Do not remove tests, disable validation, or weaken quality gates to pass CI.
+Do not claim CI passed unless the relevant local command passed or GitHub Actions reports success.
+
+## GitHub Actions
+Repository CI workflow: `.github/workflows/ci.yml`
+Assume GitHub Actions is the independent CI quality gate.
+
+Recommended sequence:
+1. Implement change.
+2. Run focused local validation.
+3. Run full backend/frontend validation when appropriate.
+4. Review `git diff` and `git status`.
+5. Commit only when explicitly asked.
+6. Push only when explicitly asked.
+7. After push, use GitHub Actions status as the final remote validation signal.
+
+## Failure recovery
+If stuck in a repeated read/tool loop:
+- Stop repeating the same call.
+- Use the last command's exit code and terminal output.
+- Inspect `git status` and `git diff`.
+- Continue from the next logical workflow step.
+- Never manufacture a failure from a successful command.

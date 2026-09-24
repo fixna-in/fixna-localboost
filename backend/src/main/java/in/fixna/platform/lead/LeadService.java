@@ -3,6 +3,8 @@ package in.fixna.platform.lead;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,8 @@ import in.fixna.platform.business.BusinessRepository;
 import in.fixna.platform.campaign.CampaignRepository;
 import in.fixna.platform.common.audit.AuditEvent;
 import in.fixna.platform.common.audit.AuditPublisher;
+import in.fixna.platform.common.logging.LoggingConstants;
+import in.fixna.platform.common.logging.LoggingContext;
 import in.fixna.platform.common.tenant.TenantContext;
 import in.fixna.platform.common.web.FixnaException;
 import in.fixna.platform.lead.dto.LeadPageResponse;
@@ -31,6 +35,8 @@ import in.fixna.platform.notification.NotificationService;
  */
 @Service
 public class LeadService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LeadService.class);
 
     private static final int MAX_PAGE_SIZE = 100;
 
@@ -77,7 +83,10 @@ public class LeadService {
         lead.setSource(request.source());
         leads.save(lead);
 
-        audit.publish(new AuditEvent(
+        LoggingContext.putOperation(LoggingConstants.LEAD_CREATE);
+        LoggingContext.putCampaignId(campaignId);
+        LOG.debug("Lead captured leadId={} businessId={} campaignId={} tenantId={}",
+                lead.getId(), businessId, campaignId, tenantId);        audit.publish(new AuditEvent(
                 "lead.created", tenantId, TenantContext.requireUserId(), "lead",
                 lead.getId().toString(), Map.of("business", businessId.toString()), null));
         notifications.publish(new Notification(

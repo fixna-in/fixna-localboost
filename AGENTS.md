@@ -12,9 +12,13 @@ Use production-quality Java 21, Spring Boot 3.x, PostgreSQL, Redis, Next.js,
 React and TypeScript patterns. Prefer simple, maintainable designs over unnecessary
 complexity.
 
+## Cursor configuration
+Agent rules, workflows and task tracking live in `.cursor/`.
+See `.cursor/README.md` for the full index.
+
 ## Before every change
 1. Read this file.
-2. Read applicable `.clinerules/*`.
+2. Read applicable `.cursor/rules/*`.
 3. Read the relevant requirement and architecture documents.
 4. Inspect existing code before creating/replacing files.
 5. Check database and API contracts.

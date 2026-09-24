@@ -44,8 +44,59 @@ is complete:
 method=POST path=/api/v1/campaigns/123/launch status=201 durationMs=84 requestId=abc tenantId=123 uuid
 ```
 
+## Log4j2 (logging implementation)
+
+SLF4J is the API; **Log4j2 is the implementation**. `spring-boot-starter-log4j2`
+is on the classpath and `spring-boot-starter-logging` (Logback) is excluded from
+every starter in `backend/pom.xml`, so there is exactly one SLF4J binding.
+
+- Configuration: `backend/src/main/resources/log4j2-spring.xml`
+  (Spring-Boot-aware, so profile blocks and `logging.level.*` overrides work).
+- Test configuration: `backend/src/test/resources/log4j2-test.xml`
+  (quiet pattern, no file appenders, no JSON).
+- Application helper: `in.fixna.platform.common.logging.LoggingContext`
+  (MDC population/clearing) and `LoggingConstants` (MDC key + operation names).
+- Sensitive-value guard: `in.fixna.platform.common.logging.SensitiveDataMasker`.
+
+### Environment behaviour
+
+| Profiles            | Appender | Format                                              |
+|---------------------|----------|-----------------------------------------------------|
+| `local`, `test`, default | Console (stdout) | human-readable pattern, truncated stack traces |
+| `dev`, `staging`, `prod` | Console (stdout) | JSON (`JsonLayout`) for ELK/OpenSearch/Loki/Datadog/CloudWatch/Azure Monitor |
+
+Container-native: nothing is written to disk — log volume/file rotation stays a
+platform (Docker/Kubernetes) concern.
+
+Local / test pattern:
+
+```text
+2026-09-18 10:15:32.123 INFO  [traceId=abc spanId=def requestId=req-1 tenantId=t-1 userId=u-1 campaignId=c-1 operation=CAMPAIGN_CREATE] CampaignService - Campaign created successfully campaignId=c-1 tenantId=t-1
+```
+
+JSON records carry `timestamp`, `level`, `loggerName`, `message`, `threadName`,
+`service`, `environment`, plus every MDC key present on the event (only keys that
+are set are emitted, so no `null` noise).
+
+### Service and environment identity
+
+- `service` = `spring.application.name` (`fixna-localboost-backend` default).
+- `environment` = `fixna.app-env` / `FIXNA_APP_ENV` (default `unknown`).
+  Profile files set it to `local`, `dev`, `staging`, `prod`; nothing
+  production-specific is hardcoded in the Log4j2 configuration.
+
+### Per-environment log levels
+
+`application.yml` sets the baseline (`logging.level.root=INFO`,
+`logging.level.in.fixna.platform=INFO`); profile files override it —
+`local`/`dev` raise `in.fixna.platform` to `DEBUG`, `prod` keeps `INFO` with
+root at `WARN`-quiet third parties. Overrides use Spring Boot's standard
+`logging.level.*` properties, which Log4j2 honours through `log4j2-spring.xml`.
+
 ## Correlation
 
+- MDC keys: `traceId`, `spanId`, `requestId`, `tenantId`, `userId`,
+  `campaignId`, `operation` — the same names are emitted as JSON fields.
 - `X-Request-Id`: accepted when safe or minted (UUID) by `RequestIdFilter`,
   returned on the response, placed in SLF4J MDC and the servlet request
   attribute.
@@ -96,15 +147,28 @@ Currently instrumented:
 prompts, responses or tokens. AI usage/cost itself is persisted in
 `ai_usage_log` (rules 11/13).
 
-## OpenTelemetry readiness
+## OpenTelemetry
 
-- All correlation access goes through `TelemetryContext` and all timing
-  through `OperationTimer` — single seams to swap for OTel `Tracer` +
-  `Span` without touching call sites.
-- Structured single-line `key=value` log records map 1:1 to OTel log
-  attributes, enabling a centralized JSON/OTLP exporter later.
-- Log levels are profile-aware (`logging.level.*` in the common
-  `application.yml`; environment overrides live in profile files).
+Dependencies: `micrometer-tracing-bridge-otel` + `opentelemetry-exporter-otlp`.
+
+| Profile   | OTLP export | Notes |
+|-----------|-------------|-------|
+| `local`   | off         | Tracing may run; spans are not exported |
+| `test`    | off         | Keeps suites infrastructure-free |
+| `dev`/`staging`/`prod` | on (default) | Endpoint via `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` |
+
+Base config (`application.yml`):
+
+- `management.tracing.sampling.probability` (default `1.0`)
+- `management.otlp.tracing.export.enabled` (default `false`)
+- `management.otlp.tracing.endpoint` (empty until set)
+
+`RequestIdFilter` copies the active Micrometer span's `traceId`/`spanId` into
+MDC (`LoggingContext.putTrace`) so JSON and human-readable logs correlate with
+exported traces. `X-Request-Id` remains the API-facing correlation key.
+
+Operation timings still flow through `OperationTimer` → `fixna.telemetry`; a
+future step can emit OTel span events from that seam without touching call sites.
 
 ## Secrets policy
 

@@ -1,0 +1,13 @@
+---
+description: Next.js and React frontend conventions
+globs: frontend/**
+alwaysApply: false
+---
+
+# Frontend Rules
+
+Next.js, React, TypeScript, Tailwind, React Hook Form, Zod and TanStack Query.
+Keep server communication in API/client modules.
+Do not put authorization decisions only in the UI.
+Validate forms and present accessible errors.
+Keep business rules on the backend; frontend validation is for UX.

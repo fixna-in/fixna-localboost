@@ -3,6 +3,8 @@ package in.fixna.platform.auth;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ import in.fixna.platform.auth.dto.LoginRequest;
 import in.fixna.platform.auth.dto.RegisterRequest;
 import in.fixna.platform.common.audit.AuditEvent;
 import in.fixna.platform.common.audit.AuditPublisher;
+import in.fixna.platform.common.logging.LoggingConstants;
+import in.fixna.platform.common.logging.LoggingContext;
+import in.fixna.platform.common.logging.SensitiveDataMasker;
 import in.fixna.platform.common.web.FixnaException;
 import in.fixna.platform.tenant.MembershipRole;
 import in.fixna.platform.tenant.Tenant;
@@ -30,6 +35,8 @@ import in.fixna.platform.user.UserRepository;
  */
 @Service
 public class AuthService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository users;
     private final TenantRepository tenants;
@@ -64,6 +71,8 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         String email = request.normalizedEmail();
         if (users.existsByEmail(email)) {
+            LOG.warn("Registration rejected reason=EMAIL_TAKEN userIdentifierHash={}",
+                    SensitiveDataMasker.userIdentifierHash(email));
             throw new FixnaException("EMAIL_TAKEN", HttpStatus.CONFLICT, "Email is already registered");
         }
         User user = new User();
@@ -87,16 +96,24 @@ public class AuthService {
         audit.publish(new AuditEvent(
                 "auth.registered", tenant.getId(), user.getId(), "user", user.getId().toString(),
                 Map.of("tenant", tenant.getId().toString()), null));
+        LoggingContext.putOperation(LoggingConstants.AUTH_LOGIN);
+        LoggingContext.putTenantAndUser(tenant.getId(), user.getId());
+        LOG.info("User registered tenantId={} userId={}", tenant.getId(), user.getId());
         return issueTokens(user.getId(), tenant.getId(), MembershipRole.TENANT_OWNER);
     }
 
     /** Login: verifies credentials, selects tenant server-side from memberships. */
     @Transactional
     public AuthResponse login(LoginRequest request) {
+        String loginHash = SensitiveDataMasker.userIdentifierHash(request.normalizedEmail());
         User user = users.findByEmail(request.normalizedEmail())
-                .orElseThrow(() -> new FixnaException(
-                        "INVALID_CREDENTIALS", HttpStatus.UNAUTHORIZED, "Invalid email or password"));
+                .orElseThrow(() -> {
+                    LOG.warn("Authentication failed reason=INVALID_CREDENTIALS userIdentifierHash={}", loginHash);
+                    return new FixnaException(
+                            "INVALID_CREDENTIALS", HttpStatus.UNAUTHORIZED, "Invalid email or password");
+                });
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            LOG.warn("Authentication failed reason=INVALID_CREDENTIALS userIdentifierHash={}", loginHash);
             throw new FixnaException(
                     "INVALID_CREDENTIALS", HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
@@ -118,6 +135,9 @@ public class AuthService {
             throw new FixnaException("NO_MEMBERSHIP", HttpStatus.FORBIDDEN, "User has no tenant membership");
         }
         TenantMembership selected = owned.get(0);
+        LoggingContext.putOperation(LoggingConstants.AUTH_LOGIN);
+        LoggingContext.putTenantAndUser(selected.getTenantId(), user.getId());
+        LOG.info("Authentication succeeded tenantId={} userId={}", selected.getTenantId(), user.getId());
         audit.publish(new AuditEvent(
                 "auth.login", selected.getTenantId(), user.getId(), "user", user.getId().toString(),
                 Map.of(), null));
@@ -160,6 +180,8 @@ public class AuthService {
     @Transactional
     public void logout(UUID userId, UUID tenantId) {
         refreshTokens.revokeAllForUser(userId);
+        LoggingContext.putOperation(LoggingConstants.AUTH_LOGOUT);
+        LOG.info("Logout completed tenantId={} userId={}", tenantId, userId);
         audit.publish(new AuditEvent(
                 "auth.logout", tenantId, userId, "user", userId.toString(), Map.of(), null));
     }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Test logging: human-readable pattern on stdout, quiet by default so suites
+  stay readable. Never hide failures: WARN root with INFO for fixna categories.
+-->
+<Configuration status="WARN" monitorInterval="0">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT" follow="true">
+      <PatternLayout
+        pattern="%d{HH:mm:ss.SSS} %-5level [requestId=%X{requestId} tenantId=%X{tenantId}] %c{1} - %msg%n%ex{short}" />
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="in.fixna.platform" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.access" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.audit" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.telemetry" level="info" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="fixna.error" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="org.hibernate.SQL" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Logger name="org.testcontainers" level="warn" additivity="false">
+      <AppenderRef ref="Console" />
+    </Logger>
+    <Root level="warn">
+      <AppenderRef ref="Console" />
+    </Root>
+  </Loggers>
+</Configuration>

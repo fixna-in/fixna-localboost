@@ -75,8 +75,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         if (!limiter.allow(key)) {
             long retryAfter = limiter.retryAfterSeconds(key);
             String requestId = MDC.get(RequestIdFilter.REQUEST_ID_ATTRIBUTE);
-            RATE_LOG.warn("Rate limit exceeded ip={} route={} retryAfter={}s",
-                    maskIp(clientIp(request)), request.getRequestURI(), retryAfter);
+            RATE_LOG.warn("Rate limit exceeded route={} retryAfter={}s", request.getRequestURI(), retryAfter);
             ApiError error = new ApiError(
                     OffsetDateTime.now(),
                     HttpStatus.TOO_MANY_REQUESTS.value(),

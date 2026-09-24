@@ -1,9 +1,0 @@
-# Backend Rules
-
-Java 21 and Spring Boot 3.x.
-Use Spring Web, Security, Validation, Data JPA/Hibernate and Actuator as needed.
-Use DTOs at API boundaries.
-Use transactions for local database consistency, but never hold a DB transaction
-while waiting for external API calls.
-Use idempotency for campaign launch/external side effects.
-Use consistent exception handling and request IDs.

@@ -11,6 +11,12 @@ fixna:
     hsts-enabled: true
   ai:
     provider: ${FIXNA_AI_PROVIDER:mock}
+management:
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:}
+      export:
+        enabled: ${OTEL_EXPORTER_OTLP_ENABLED:true}
 logging:
   level:
     root: INFO

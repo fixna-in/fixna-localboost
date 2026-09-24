@@ -1,0 +1,41 @@
+---
+description: AI advisory flow, LLM engineering, and provider abstraction
+globs: backend/src/main/java/**/ai/**
+alwaysApply: false
+---
+
+# AI Rules
+
+AI is advisory, never authoritative.
+
+Flow:
+input -> provider -> structured JSON -> schema validation -> business validation ->
+platform compatibility -> recommendation -> user approval -> execution.
+
+AI must never:
+- spend money
+- launch/pause campaigns
+- modify budgets
+- access credentials
+- execute SQL/shell
+- send customer messages
+
+Use AIProvider abstraction with MockAIProvider for local/demo mode.
+Track prompt version, provider/model, token usage and estimated cost.
+Apply timeouts, rate limits and tenant quotas.
+
+# LLM Engineering
+
+Provider abstraction:
+AIProvider -> MockAIProvider / OpenAIProvider / AnthropicProvider / GeminiProvider.
+
+Every LLM request:
+- has a versioned prompt
+- has a structured response schema
+- validates JSON/schema
+- validates business rules
+- records usage/cost metadata
+- has timeout/error handling
+
+Do not parse arbitrary natural language into executable application state.
+Treat every LLM response as untrusted external input.

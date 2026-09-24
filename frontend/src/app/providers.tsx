@@ -7,11 +7,12 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { apiClient, toApiError } from "@/lib/api-client";
+import { AuthProvider } from "@/lib/auth-context";
 
 /** Shared loading skeleton for async states. */
 export function LoadingState({ label }: { label: string }) {
   return (
-    <p role="status" aria-live="polite">
+    <p className="loading-state" role="status" aria-live="polite">
       {label}…
     </p>
   );
@@ -55,9 +56,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <AuthProvider>{children}</AuthProvider>
     </QueryClientProvider>
   );
 }
 
 export { HealthProbe };
+

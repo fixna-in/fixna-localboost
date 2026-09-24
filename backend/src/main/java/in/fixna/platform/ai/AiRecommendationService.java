@@ -4,11 +4,15 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import in.fixna.platform.common.audit.AuditEvent;
 import in.fixna.platform.common.audit.AuditPublisher;
+import in.fixna.platform.common.logging.LoggingConstants;
+import in.fixna.platform.common.logging.LoggingContext;
 import in.fixna.platform.common.observability.OperationTimer;
 import in.fixna.platform.common.tenant.TenantContext;
 import in.fixna.platform.common.web.FixnaException;
@@ -22,6 +26,8 @@ import in.fixna.platform.common.web.FixnaException;
  */
 @Service
 public class AiRecommendationService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AiRecommendationService.class);
 
     private final AIProvider provider;
     private final AiSchemaValidator schemaValidator;
@@ -80,6 +86,13 @@ public class AiRecommendationService {
         // Output is untrusted until schema-validated; no usage row on failure.
         schemaValidator.validate(type, result.data());
         recordUsage(tenantId, userId, type, result, (System.nanoTime() - startedAt) / 1_000_000L);
+        LoggingContext.putOperation(LoggingConstants.AI_RECOMMENDATION_GENERATE);
+        LoggingContext.putCampaignId(campaignId);
+        LOG.info("AI recommendation generated type={} provider={} model={} tenantId={} campaignId={}"
+                        + " inputTokens={} outputTokens={} durationMs={}",
+                type, result.provider(), result.model(), tenantId, campaignId,
+                result.promptTokens(), result.completionTokens(),
+                (System.nanoTime() - startedAt) / 1_000_000L);
         audit.publish(new AuditEvent(
                 "ai.recommendation_generated", tenantId, userId, "ai_recommendation",
                 campaignId == null ? null : campaignId.toString(),

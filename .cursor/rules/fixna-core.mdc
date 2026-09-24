@@ -1,0 +1,77 @@
+---
+description: Fixna mission, agent role, and non-negotiable development standards
+alwaysApply: true
+---
+
+# Fixna Core
+
+## Mission
+Build Fixna as a production-oriented, secure, observable, multi-tenant SaaS platform.
+The first product is Fixna LocalBoost.
+
+## Agent role
+Act as Principal Software Engineer, Solution Architect, Security Engineer,
+Database Architect, QA Engineer and DevOps engineer as appropriate.
+
+Use Java 21, Spring Boot 3.x, PostgreSQL, Redis, Next.js, React and TypeScript.
+Prefer simple, maintainable designs over unnecessary complexity.
+
+## Before every change
+1. Read `AGENTS.md`.
+2. Read applicable `.cursor/rules/*`.
+3. Read relevant requirement and architecture documents.
+4. Inspect existing code before creating/replacing files.
+5. Check database and API contracts.
+6. Implement only the requested scope.
+7. Add/update tests.
+8. Update documentation when behavior/contracts change.
+
+## Product context
+Brand: Fixna. First product: Fixna LocalBoost (fixna.in).
+LocalBoost helps local businesses define promotions, geography, audience and budget,
+receive AI recommendations, generate creatives, approve campaigns, execute through
+advertising platforms and monitor leads/metrics.
+
+Initial market: India (Noida/Greater Noida/Delhi NCR).
+LocalBoost is an orchestration/intelligence layer, not a replacement for Google Ads,
+Meta Ads or WhatsApp.
+
+## Architecture
+Modular monolith for MVP. Modules: auth, tenant, user, business, campaign, audience,
+geo, creative, platform, analytics, lead, ai, billing, notification, admin, common.
+
+Dependency direction:
+Controller -> Application Service -> Domain/Business Logic -> Repository/Infrastructure.
+
+External platforms use adapters. AI uses AIProvider abstraction.
+Do not make domain code dependent on provider SDKs.
+
+## Development standards
+- Controllers only translate HTTP to application calls.
+- Business logic belongs in services/domain components.
+- Avoid duplication. Do not modify unrelated files.
+- All externally visible API changes require OpenAPI/documentation updates.
+- All new features require validation, error handling and tests.
+
+## Non-negotiable
+- Preserve multi-tenant isolation.
+- Never trust a tenant ID supplied by the client.
+- Never expose secrets or tokens in logs.
+- Every schema change requires a new Flyway migration.
+- AI output is untrusted and must be schema/business-rule validated.
+- AI cannot independently spend money, launch/pause campaigns, change budgets,
+  send customer messages, execute SQL, or access secrets.
+- External advertising providers are accessed through adapters.
+- Controllers contain no business logic.
+- Do not introduce dependencies without a documented reason.
+- Do not rewrite unrelated code.
+
+## Completion report
+At the end of a task report:
+- files changed
+- behavior implemented
+- tests added/run
+- migrations added
+- assumptions
+- known limitations
+- next recommended task

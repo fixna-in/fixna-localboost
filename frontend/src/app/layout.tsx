@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { AppShell } from "@/components/app-shell";
+import "./globals.css";
+import "./product.css";
+import "./workspace.css";
+import "./responsive.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
@@ -15,15 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header>
-          <nav aria-label="Primary">
-            <a href="/">Fixna LocalBoost</a>
-          </nav>
-        </header>
-        <main>
-          <Providers>{children}</Providers>
-        </main>
+        <Providers><AppShell>{children}</AppShell></Providers>
       </body>
     </html>
   );
 }
+

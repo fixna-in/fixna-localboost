@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import in.fixna.platform.common.audit.AuditEvent;
 import in.fixna.platform.common.audit.AuditPublisher;
+import in.fixna.platform.common.logging.LoggingConstants;
+import in.fixna.platform.common.logging.LoggingContext;
 import in.fixna.platform.common.tenant.TenantContext;
 import in.fixna.platform.common.web.FixnaException;
 import in.fixna.platform.tenant.dto.MembershipResponse;
@@ -23,6 +27,8 @@ import in.fixna.platform.user.UserRepository;
  */
 @Service
 public class TenantService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TenantService.class);
 
     private final TenantRepository tenants;
     private final TenantMembershipRepository memberships;
@@ -69,6 +75,7 @@ public class TenantService {
         membership.setRole(MembershipRole.TENANT_OWNER);
         memberships.save(membership);
 
+        LOG.info("Tenant created tenantId={} userId={}", tenant.getId(), userId);
         audit.publish(new AuditEvent(
                 "tenant.created", tenant.getId(), userId, "tenant", tenant.getId().toString(),
                 Map.of(), null));

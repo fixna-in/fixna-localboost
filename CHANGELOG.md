@@ -1,5 +1,145 @@
 # Changelog
 
+## Unreleased — OpenTelemetry and CI hardening
+
+- Added Micrometer OpenTelemetry bridge and OTLP trace exporter (export
+  disabled in `local`/`test`; enabled in `dev`/`staging`/`prod` via
+  `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`).
+- `RequestIdFilter` copies active span `traceId`/`spanId` into MDC for
+  log/trace correlation.
+- Removed duplicate `Application.java` main class (`FixnaApplication` only).
+- Fixed Log4j2 test configuration and `PlatformException.getPlatform()` compile
+  error in campaign launch logging.
+- CI frontend job now uses `npm ci` with `package-lock.json` cache.
+
+## Unreleased — Cursor agent configuration
+
+- Migrated AI agent configuration from Cline (`.cline/`, `.clinerules/`) to
+  Cursor (`.cursor/rules/`, `.cursor/workflows/`, `.cursor/tasks/`).
+- Converted 17 Cline rule files into 12 focused `.mdc` rule files with YAML
+  frontmatter (`alwaysApply` and file-glob scoping).
+- Updated `AGENTS.md`, `README.md`, branch strategy docs, and module READMEs
+  to reference Cursor paths.
+- Removed stale scratch files (root `*.log`, `progress.md`, frontend build
+  verification artifacts) and obsolete directories (`database/` duplicate
+  migrations, Cline `memorybank/`).
+- Extended `.gitignore` for TypeScript build info and agent scratch files.
+
+## Unreleased — Log4j2 structured logging
+
+- Replaced the default Spring Boot logging backend with Log4j2:
+  `spring-boot-starter-log4j2` added, `spring-boot-starter-logging` excluded,
+  so SLF4J -> Log4j2 is the single logging implementation.
+- Added `log4j2-spring.xml` (human-readable pattern for `local`/`test`/default,
+  structured JSON with `service`/`environment` plus all MDC fields for
+  `dev`/`staging`/`prod`) and a quiet `log4j2-test.xml` for suites.
+- Added MDC correlation (`traceId`, `spanId`, `requestId`, `tenantId`,
+  `userId`, `campaignId`, `operation`) via `LoggingContext`, populated from the
+  JWT-derived tenant context — never from client input — and cleared per request.
+- Added `SensitiveDataMasker` and safe `X-Request-Id` sanitization so secrets,
+  tokens and raw query strings never reach logs.
+- Added business/technical log lines for auth, campaign lifecycle, launch
+  orchestration, AI recommendations and leads. No schema or API contract change.
+
+## Unreleased — password utility launcher fix
+
+- Pass the full Maven dependency classpath through a Java argument file instead
+  of CMD `set /p`, which truncates long lines and prevented BCrypt from loading.
+- Added a real-launcher regression check for dependency loading from a different
+  working directory, without supplying or recording a password.
+
+
+## Unreleased — consolidated local PostgreSQL profile
+
+- Kept only `application-local.yml` for local development: persistent
+  `localhost:5432/localboost`, user `postgres`, runtime `POSTGRES_PASSWORD`.
+- Removed superseded local-pg/local-nodocker profiles and embedded PostgreSQL
+  configuration/dependency. Launcher now selects `local`; automatic fixture
+  loading remains disabled. Separate SQL setup and existing data are unchanged.
+- Updated seeder profile guards/tests and added local configuration regression
+  coverage. Non-local environment profiles remain unchanged.
+
+
+## Unreleased — local startup test fixture
+
+- Simplified local setup: standalone `tools/sql/schema.sql` (V1–V9 plus baseline),
+  standalone `tools/sql/demo-data.sql`, and one service launcher via `.cmd`/PowerShell.
+  Persistent startup no longer creates databases, seeds fixtures or prints passwords.
+  Removed superseded create/load wrappers and obsolete fixture-launcher tests.
+  Disposable PostgreSQL SQL tests passed: full fixture, repeat-run preservation,
+  baseline record and rejection of nonempty schemas. No applied migration changed.
+
+
+- Added persistent `local-pg` startup against localhost:5432/localboost as the
+  demo launcher's default. Database and demo passwords are supplied at runtime;
+  existing records are preserved. Added create-if-missing database and psql seed
+  wrapper scripts, local-profile guard tests, and setup documentation. Embedded
+  PostgreSQL remains available with `-EmbeddedDatabase`. No applied migrations
+  changed. Validation of this change is pending.
+
+
+- Fixed demo launcher process-exit handling on Windows PowerShell: retain the
+  child process handle and distinguish an unavailable exit code from a real
+  npm failure. No dependency changes or install-check bypass. Process exit-code
+  regressions (0 and 7) and nine fixture regressions passed; full frontend
+  launcher smoke-test completion remains unconfirmed in the agent terminal.
+
+
+- Fixed logout returning HTTP 500 during demo startup: JWT authentication now
+  runs for logout, and only register/login/refresh remain public auth routes.
+  Added a missing-principal guard, OpenAPI endpoint documentation, and MVC
+  security-chain regression tests for authenticated, anonymous, invalid-token,
+  revoked-membership, and public-auth requests.
+
+
+- Fixed Windows PowerShell REST-array counting in the demo launcher, which
+  incorrectly rejected the two-campaign fixture after successful login. Kept
+  strict fixture checks and added count-only failure diagnostics plus a
+  dependency-free regression script: tools/test-local-demo-fixture.ps1.
+
+- Added Windows `tools/start-local-demo.cmd` plus PowerShell orchestration:
+  bounded startup, generated local password, API login/data verification,
+  optional frontend startup, process cleanup and smoke-test mode.
+- Expanded the atomic local fixture with two demo campaigns, offers, channels,
+  geo/audience/creative data, ten leads, seven metric days and STARTER subscription.
+  No external execution or platform-admin privilege. Extended integration assertions.
+
+- Added a separate SQL fixture and local-nodocker startup loader for a test
+  owner, workspace, business and location. Requires FIXNA_TEST_USER_PASSWORD;
+  stores only BCrypt hashes. Existing emails skip the entire fixture unchanged.
+- Restricted to local-nodocker/local; opt out with FIXNA_TEST_DATA_ENABLED=false.
+  Added unit/environment checks and PostgreSQL integration tests for repeat runs,
+  password compatibility and existing-account preservation. No schema/API changes.
+
+
+## Unreleased (frontend API integration, 2026-09-17)
+
+- Redesigned the frontend with a green/lime visual identity, split-panel
+  authentication pages, responsive workspace navigation, dashboard metric cards,
+  campaign tables, business cards, lead badges, and guided empty states.
+  Existing API calls remain in place; demo metrics are explicitly labeled.
+  Added metric-formatting tests. Build completion and browser appearance are
+  not yet verified; do not treat this visual pass as production sign-off.
+
+
+- Added the missing global stylesheet and root-layout import. Shared responsive
+  navigation, forms, error states, and login/register cards now have baseline
+  styling rather than browser defaults. Uses native CSS; no new dependencies
+  or API changes. Tailwind remains unconfigured.
+
+- Frontend wired to the built backend (`/api/v1`, JWT from refresh rotation):
+  fixed `api-client` base URL to honor canonical `NEXT_PUBLIC_API_BASE_URL`
+  (`.../api` + `/v1` auto-append, legacy `NEXT_PUBLIC_API_URL` fallback),
+  added `AuthProvider` + refresh restore, and built journey pages —
+  login/register, dashboard (`GET /analytics/dashboard` + demo-seed),
+  businesses + detail/locations, campaigns list/new/detail (transitions,
+  idempotent launch + execute-launch, 50-50 channel split, advisory AI
+  strategy call, geo/audience/creative sub-resources), leads
+  (paginated + status advance). Added `@hookform/resolvers` dep and
+  `api-schemas.test.ts` (auth/campaign/error mapping). No backend change.
+  Verify locally: `npm --prefix frontend install` then `npm run build`
+  from `frontend/` (blocked in-agent by PowerShell execution policy).
+
 ## Unreleased (post-cc95cc0 hotfixes, 2026-09-17)
 
 - Fixed `PlatformJsonShapes` compilation failure (2026-09-17): added missing

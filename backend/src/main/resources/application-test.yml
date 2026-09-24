@@ -11,6 +11,11 @@ fixna:
       per-ip-per-minute: ${FIXNA_RATE_LIMIT_PER_IP_PER_MINUTE:1000}
   ai:
     provider: mock
+management:
+  otlp:
+    tracing:
+      export:
+        enabled: false
 logging:
   level:
     root: INFO

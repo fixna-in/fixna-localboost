@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RequestIdAndErrorTest {
 
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
-    private final RequestIdFilter filter = new RequestIdFilter();
+    private final RequestIdFilter filter = RequestIdFilter.forTests(null);
 
     @Test
     void exceptionMapsToEnvelope() {

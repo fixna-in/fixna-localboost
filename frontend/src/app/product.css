@@ -1,0 +1,51 @@
+:root { --background: #f6f8fa; --surface: #fff; --text: #182c29; --muted: #60716e; --primary: #17634e; --border: #dde5e2; }
+body { font-size: 0.9375rem; -webkit-font-smoothing: antialiased; }
+button, .button { display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem; min-height: 46px; padding: 0.7rem 1.2rem; border: 1px solid transparent; border-radius: 9px; background: var(--primary); color: #fff; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; transition: background 150ms ease; }
+button:hover:not(:disabled), .button:hover { background: #104c3b; color: white; text-decoration: none; }
+.button-secondary { background: #fff; color: var(--text); border-color: var(--border); }
+.button-secondary:hover, button.button-secondary:hover:not(:disabled), .button.button-secondary:hover { background: #edf4f0; color: var(--text); }
+.button-small { min-height: 40px; padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+.button-quiet { background: transparent; color: var(--muted); justify-content: flex-start; }
+.eyebrow { font-size: 0.68rem; font-weight: 750; letter-spacing: 0.13em; color: var(--primary); margin: 0 0 0.7rem; }
+.muted { color: var(--muted); }
+h1 { font-size: clamp(1.8rem, 3vw, 2.3rem); letter-spacing: -0.045em; font-weight: 650; }
+h2 { font-size: 1.15rem; letter-spacing: -0.025em; }
+.brand { display: inline-flex; gap: 0.65rem; align-items: center; color: var(--text); font-weight: 750; font-size: 1.7rem; line-height: 1; letter-spacing: -0.06em; text-decoration: none; }
+.brand:hover { text-decoration: none; }
+.brand-mark { display: inline-flex; justify-content: center; align-items: center; background: #163e32; color: #fff; border-radius: 12px; width: 42px; height: 44px; font-size: 2rem; }
+.brand-mark span, .orbit-core span { color: #c7ed94; }
+.brand-product { display: block; color: var(--muted); font-size: 0.61rem; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.3rem; }
+.public-header { height: 90px; padding: 0 5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: #fff; }
+.public-header nav { display: flex; align-items: center; gap: 1.8rem; }
+.public-header nav > a:not(.button) { font-size: 0.85rem; color: var(--text); text-decoration: none; }
+.public-header nav > a:hover { text-decoration: underline; }
+.public-footer { display: flex; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: auto; padding: 1.5rem 5%; color: var(--muted); font-size: 0.75rem; }
+.auth-layout { display: grid; grid-template-columns: 1fr 1fr; min-height: 720px; max-width: 1400px; margin: auto; background: white; }
+.auth-story { position: relative; overflow: hidden; background: radial-gradient(ellipse at 0% 80%, #305c47 0%, #173d31 55%); color: #fff; margin: 1.5rem; padding: 3rem; border-radius: 20px; display: flex; flex-direction: column; }
+.story-pill { display: inline-block; align-self: flex-start; font-size: 0.63rem; letter-spacing: 0.14em; font-weight: 650; border: 1px solid #668274; border-radius: 30px; padding: 0.55rem 0.9rem; }
+.auth-story h2 { font-size: clamp(2rem, 3.3vw, 3.25rem); line-height: 1.14; margin: 1.8rem 0 1rem; font-weight: 550; letter-spacing: -0.045em; }
+.auth-story em { font-style: normal; color: #c7ed94; }
+.auth-story > p { max-width: 370px; color: #c5d8cf; font-size: 0.9rem; }
+.orbit-art { position: relative; height: 205px; margin: 1rem 0; }
+.orbit-ring { position: absolute; border: 1px solid #557662; border-radius: 50%; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.ring-one { width: 155px; height: 155px; }
+.ring-two { width: 245px; height: 245px; border-style: dashed; opacity: 0.55; }
+.orbit-core { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #254e3c; border: 1px solid #728e65; border-radius: 20px; width: 70px; height: 70px; text-align: center; font-size: 2.7rem; font-weight: 700; }
+.orbit-label { position: absolute; background: #f8fbf5; color: #274a38; font-size: 0.72rem; padding: 0.65rem 0.85rem; border-radius: 9px; box-shadow: 0 8px 20px #102e2440; }
+.orbit-label-one { left: 0; top: 20%; }
+.orbit-label-two { right: 0; bottom: 15%; }
+.orbit-dot { position: absolute; background: #c7ed94; border-radius: 50%; width: 12px; height: 12px; top: 3%; left: 62%; }
+.story-footnote { display: flex; align-items: center; gap: 0.8rem; margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #547163; }
+.story-footnote > span { color: #c7ed94; font-size: 1.5rem; }
+.story-footnote strong { font-size: 0.76rem; font-weight: 550; }
+.story-footnote small { display: block; color: #c5d8cf; font-size: 0.67rem; margin-top: 0.3rem; }
+.auth-panel { padding: 3rem 2rem; display: flex; flex-direction: column; justify-content: center; }
+.auth-card { width: 100%; max-width: 390px; margin: auto; padding: 0; border: 0; box-shadow: none; border-radius: 0; }
+.auth-card h1 { font-size: 2.25rem; }
+.auth-card form { gap: 1.15rem; margin: 2rem 0; }
+.auth-card input { background: #fcfdfc; min-height: 48px; }
+.auth-card label { font-size: 0.8rem; font-weight: 600; }
+.auth-description { font-size: 0.88rem; }
+.auth-footer { font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+.auth-footer a { font-weight: 650; }
+.auth-security { text-align: center; font-size: 0.7rem; color: var(--muted); margin: 2.5rem 0 0; }

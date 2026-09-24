@@ -1,9 +1,0 @@
-# Database Rules
-
-PostgreSQL + Flyway.
-Use UUID primary keys and timestamptz timestamps.
-Tenant-owned tables require NOT NULL tenant_id and tenant-scoped foreign keys
-where practical.
-Never edit an applied migration. Add a new migration.
-Add indexes based on real access patterns.
-Never store plaintext passwords, provider secrets or OAuth tokens.
