@@ -86,7 +86,16 @@ Generate JWT (PowerShell):
 ```
 
 6. First deploy takes **5–10 minutes** (Maven build inside Docker).
-7. Test: `https://fixna-localboost-api.onrender.com/actuator/health` → `{"status":"UP"}`
+7. **Verify in Render → Environment:** `SPRING_PROFILES_ACTIVE` = `staging` (required).
+8. Test: `https://fixna-localboost-api.onrender.com/actuator/health` → `{"status":"UP"}`
+
+### 2.1b Demo user (manual SQL in Neon — not on app startup)
+
+The app does **not** seed test data on staging. After Flyway has created tables, run once in **Neon SQL Editor**:
+
+`tools/sql/neon-demo-seed.sql` — replace `REPLACE_WITH_BCRYPT_HASH`, then execute.
+
+Login: `owner@example.com` + the password you hashed.
 
 ### 2.2 Custom domain `api.fixna.in`
 

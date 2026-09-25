@@ -1,13 +1,14 @@
-# Staging / shared demo (app.fixna.in + api.fixna.in). Mirrors prod TLS concerns
-# but keeps mock AI/adapters. Redis is optional — excluded unless REDIS_URL is set.
+# Staging / shared demo (app.fixna.in + api.fixna.in). Set SPRING_PROFILES_ACTIVE=staging on Render.
+# No automatic test-data seed — load tools/sql/neon-demo-seed.sql in Neon manually.
 spring:
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
       - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
 
 fixna:
-  app-env: ${FIXNA_APP_ENV:demo}
+  app-env: demo
   security:
     jwt:
       secret: ${FIXNA_JWT_SECRET:}
