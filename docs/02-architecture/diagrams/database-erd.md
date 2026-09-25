@@ -7,250 +7,12 @@ All tenant-owned tables carry `tenant_id` for multi-tenant isolation (shared sch
 > `ai_usage` and `ai_recommendations` (V6) exist in the schema but are not yet
 > mapped by JPA entities; runtime AI cost tracking uses `ai_usage_log`.
 
-## Full ERD
+## Full ERD (relationships)
+
+Relationship-only diagram — renders reliably in GitHub and Cursor Mermaid previews.
 
 ```mermaid
 erDiagram
-    tenants {
-        uuid id PK
-        varchar name
-        varchar tenant_type
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    users {
-        uuid id PK
-        varchar email UK
-        varchar password_hash
-        varchar first_name
-        varchar last_name
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    tenant_memberships {
-        uuid id PK
-        uuid tenant_id FK
-        uuid user_id FK
-        varchar role
-        timestamptz created_at
-    }
-
-    businesses {
-        uuid id PK
-        uuid tenant_id FK
-        varchar name
-        varchar category
-        text description
-        varchar website_url
-        varchar phone
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    business_locations {
-        uuid id PK
-        uuid tenant_id FK
-        uuid business_id FK
-        varchar address_line
-        varchar city
-        varchar state
-        varchar postal_code
-        varchar country
-        numeric latitude
-        numeric longitude
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    campaigns {
-        uuid id PK
-        uuid tenant_id FK
-        uuid business_id FK
-        varchar name
-        varchar objective
-        varchar status
-        numeric total_budget
-        varchar currency
-        timestamptz start_at
-        timestamptz end_at
-        varchar external_reference
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    campaign_offers {
-        uuid id PK
-        uuid tenant_id FK
-        uuid campaign_id FK
-        varchar title
-        text description
-        varchar promo_code
-        timestamptz created_at
-    }
-
-    campaign_channels {
-        uuid id PK
-        uuid tenant_id FK
-        uuid campaign_id FK
-        varchar channel
-        numeric allocated_budget
-        timestamptz created_at
-    }
-
-    audiences {
-        uuid id PK
-        uuid tenant_id FK
-        uuid campaign_id FK
-        varchar name
-        jsonb definition
-        timestamptz created_at
-    }
-
-    geo_targets {
-        uuid id PK
-        uuid tenant_id FK
-        uuid campaign_id FK
-        varchar target_type
-        varchar name
-        numeric latitude
-        numeric longitude
-        numeric radius_km
-        varchar country_code
-        varchar region_code
-        varchar city
-        varchar postal_code
-        timestamptz created_at
-    }
-
-    creatives {
-        uuid id PK
-        uuid tenant_id FK
-        uuid campaign_id FK
-        varchar channel
-        varchar headline
-        text body
-        varchar call_to_action
-        varchar status
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    platform_connections {
-        uuid id PK
-        uuid tenant_id FK
-        varchar platform
-        varchar external_account_id
-        text encrypted_access_token
-        text encrypted_refresh_token
-        varchar status
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    campaign_metrics {
-        uuid id PK
-        uuid tenant_id FK
-        uuid campaign_id FK
-        date metric_date
-        numeric spend
-        bigint impressions
-        bigint reach
-        bigint clicks
-        bigint conversions
-        bigint leads
-        timestamptz created_at
-    }
-
-    leads {
-        uuid id PK
-        uuid tenant_id FK
-        uuid business_id FK
-        uuid campaign_id FK
-        varchar name
-        varchar phone
-        varchar email
-        varchar status
-        varchar source
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    ai_recommendations {
-        uuid id PK
-        uuid tenant_id FK
-        uuid campaign_id FK
-        varchar recommendation_type
-        varchar prompt_version
-        varchar provider
-        varchar model
-        jsonb payload
-        varchar status
-        timestamptz created_at
-    }
-
-    ai_usage {
-        uuid id PK
-        uuid tenant_id FK
-        varchar provider
-        varchar model
-        varchar request_type
-        bigint input_tokens
-        bigint output_tokens
-        numeric estimated_cost
-        varchar status
-        timestamptz created_at
-    }
-
-    ai_usage_log {
-        uuid id PK
-        uuid tenant_id
-        uuid user_id
-        varchar recommendation_type
-        varchar provider
-        varchar model
-        varchar prompt_version
-        int input_tokens
-        int output_tokens
-        numeric estimated_cost_usd
-        bigint duration_ms
-        varchar status
-        timestamptz created_at
-    }
-
-    subscriptions {
-        uuid id PK
-        uuid tenant_id FK_UK
-        varchar plan_code
-        varchar status
-        timestamptz starts_at
-        timestamptz ends_at
-        timestamptz created_at
-        timestamptz updated_at
-    }
-
-    audit_logs {
-        uuid id PK
-        uuid tenant_id FK
-        uuid user_id FK
-        varchar action
-        varchar resource_type
-        uuid resource_id
-        jsonb metadata
-        timestamptz created_at
-    }
-
-    refresh_tokens {
-        uuid id PK
-        uuid user_id FK
-        uuid tenant_id FK
-        varchar token_hash UK
-        timestamptz expires_at
-        boolean revoked
-        timestamptz created_at
-    }
-
     tenants ||--o{ tenant_memberships : "has members"
     users ||--o{ tenant_memberships : "belongs to"
     tenants ||--o{ businesses : "owns"
@@ -284,11 +46,285 @@ erDiagram
     tenants ||--o{ refresh_tokens : "scopes"
 ```
 
+## Auth and tenancy
+
+```mermaid
+erDiagram
+    tenants {
+        uuid id PK
+        string name
+        string tenant_type
+        datetime created_at
+        datetime updated_at
+    }
+    users {
+        uuid id PK
+        string email
+        string password_hash
+        string first_name
+        string last_name
+        datetime created_at
+        datetime updated_at
+    }
+    tenant_memberships {
+        uuid id PK
+        uuid tenant_id FK
+        uuid user_id FK
+        string role
+        datetime created_at
+    }
+    refresh_tokens {
+        uuid id PK
+        uuid user_id FK
+        uuid tenant_id FK
+        string token_hash
+        datetime expires_at
+        string revoked
+        datetime created_at
+    }
+    tenants ||--o{ tenant_memberships : has
+    users ||--o{ tenant_memberships : belongs
+    users ||--o{ refresh_tokens : issues
+    tenants ||--o{ refresh_tokens : scopes
+```
+
+## Business and campaigns
+
+```mermaid
+erDiagram
+    businesses {
+        uuid id PK
+        uuid tenant_id FK
+        string name
+        string category
+        string description
+        string website_url
+        string phone
+        datetime created_at
+        datetime updated_at
+    }
+    business_locations {
+        uuid id PK
+        uuid tenant_id FK
+        uuid business_id FK
+        string address_line
+        string city
+        string state
+        string postal_code
+        string country
+        float latitude
+        float longitude
+        datetime created_at
+        datetime updated_at
+    }
+    campaigns {
+        uuid id PK
+        uuid tenant_id FK
+        uuid business_id FK
+        string name
+        string objective
+        string status
+        float total_budget
+        string currency
+        datetime start_at
+        datetime end_at
+        string external_reference
+        datetime created_at
+        datetime updated_at
+    }
+    campaign_offers {
+        uuid id PK
+        uuid tenant_id FK
+        uuid campaign_id FK
+        string title
+        string description
+        string promo_code
+        datetime created_at
+    }
+    campaign_channels {
+        uuid id PK
+        uuid tenant_id FK
+        uuid campaign_id FK
+        string channel
+        float allocated_budget
+        datetime created_at
+    }
+    tenants ||--o{ businesses : owns
+    businesses ||--o{ business_locations : has
+    tenants ||--o{ campaigns : owns
+    businesses ||--o{ campaigns : runs
+    campaigns ||--o{ campaign_offers : has
+    campaigns ||--o{ campaign_channels : allocates
+```
+
+## Targeting and creatives
+
+```mermaid
+erDiagram
+    campaigns {
+        uuid id PK
+        uuid tenant_id FK
+        uuid business_id FK
+        string name
+        string status
+    }
+    audiences {
+        uuid id PK
+        uuid tenant_id FK
+        uuid campaign_id FK
+        string name
+        string definition_json
+        datetime created_at
+    }
+    geo_targets {
+        uuid id PK
+        uuid tenant_id FK
+        uuid campaign_id FK
+        string target_type
+        string name
+        float latitude
+        float longitude
+        float radius_km
+        string country_code
+        string region_code
+        string city
+        string postal_code
+        datetime created_at
+    }
+    creatives {
+        uuid id PK
+        uuid tenant_id FK
+        uuid campaign_id FK
+        string channel
+        string headline
+        string creative_body
+        string call_to_action
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+    campaigns ||--o{ audiences : targets
+    campaigns ||--o{ geo_targets : targets
+    campaigns ||--o{ creatives : has
+```
+
+## Platform, analytics, AI and billing
+
+```mermaid
+erDiagram
+    platform_connections {
+        uuid id PK
+        uuid tenant_id FK
+        string platform
+        string external_account_id
+        string encrypted_access_token
+        string encrypted_refresh_token
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+    campaign_metrics {
+        uuid id PK
+        uuid tenant_id FK
+        uuid campaign_id FK
+        date metric_date
+        float spend
+        int impressions
+        int reach
+        int clicks
+        int conversions
+        int lead_count
+        datetime created_at
+    }
+    leads {
+        uuid id PK
+        uuid tenant_id FK
+        uuid business_id FK
+        uuid campaign_id FK
+        string name
+        string phone
+        string email
+        string status
+        string source
+        datetime created_at
+        datetime updated_at
+    }
+    ai_recommendations {
+        uuid id PK
+        uuid tenant_id FK
+        uuid campaign_id FK
+        string recommendation_type
+        string prompt_version
+        string provider
+        string model
+        string payload_json
+        string status
+        datetime created_at
+    }
+    ai_usage {
+        uuid id PK
+        uuid tenant_id FK
+        string provider
+        string model
+        string request_type
+        int input_tokens
+        int output_tokens
+        float estimated_cost
+        string status
+        datetime created_at
+    }
+    ai_usage_log {
+        uuid id PK
+        uuid tenant_id
+        uuid user_id
+        string recommendation_type
+        string provider
+        string model
+        string prompt_version
+        int input_tokens
+        int output_tokens
+        float estimated_cost_usd
+        int duration_ms
+        string status
+        datetime created_at
+    }
+    subscriptions {
+        uuid id PK
+        uuid tenant_id FK
+        string plan_code
+        string status
+        datetime starts_at
+        datetime ends_at
+        datetime created_at
+        datetime updated_at
+    }
+    audit_logs {
+        uuid id PK
+        uuid tenant_id FK
+        uuid user_id FK
+        string action
+        string resource_type
+        uuid resource_id
+        string metadata_json
+        datetime created_at
+    }
+    tenants ||--o{ platform_connections : connects
+    campaigns ||--o{ campaign_metrics : tracks
+    tenants ||--o{ leads : scopes
+    businesses ||--o{ leads : captures
+    campaigns ||--o{ leads : attributes
+    campaigns ||--o{ ai_recommendations : receives
+    tenants ||--o{ ai_usage : scopes
+    tenants ||--|| subscriptions : plan
+    tenants ||--o{ audit_logs : audits
+    users ||--o{ audit_logs : performs
+```
+
 ## Domain clusters
 
 ```mermaid
 flowchart TB
-    subgraph auth["Auth & tenancy"]
+    subgraph auth["Auth and tenancy"]
         tenants
         users
         tenant_memberships
@@ -309,13 +345,13 @@ flowchart TB
         creatives
     end
 
-    subgraph platform["Platform & analytics"]
+    subgraph platform["Platform and analytics"]
         platform_connections
         campaign_metrics
         leads
     end
 
-    subgraph ai["AI & billing"]
+    subgraph ai["AI and billing"]
         ai_recommendations
         ai_usage
         ai_usage_log
@@ -357,7 +393,7 @@ flowchart LR
     membership --> business[businesses]
     business --> location[business_locations]
     business --> campaign[campaigns]
-    campaign --> child["audiences · geo_targets · creatives · campaign_channels · campaign_offers · campaign_metrics · ai_recommendations"]
+    campaign --> child["audiences, geo_targets, creatives, campaign_channels, campaign_offers, campaign_metrics, ai_recommendations"]
     tenant --> subscription[subscriptions]
     tenant --> platform[platform_connections]
     tenant --> lead[leads]
@@ -389,3 +425,13 @@ flowchart LR
 | V7 | `refresh_tokens` |
 | V8 | `ai_usage_log` |
 | V9 | indexes only (no new tables) |
+
+## Diagram notes
+
+Mermaid `erDiagram` attribute blocks are sensitive to reserved words and compound
+key markers. This file avoids:
+
+- `body` (reserved) — shown as `creative_body`
+- `jsonb` columns — shown as `*_json` string fields
+- `FK_UK` / `UK` markers — uniqueness documented in the constraints table
+- oversized single diagrams — split by domain for reliable rendering
