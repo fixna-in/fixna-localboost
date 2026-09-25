@@ -11,5 +11,8 @@ WORKDIR /app
 RUN useradd --system --uid 10001 --create-home appuser
 USER appuser
 COPY --from=build /workspace/target/fixna-api.jar app.jar
+# Demo/staging defaults for container hosts (Render, Fly). Override via host env if needed.
+ENV SPRING_PROFILES_ACTIVE=staging
+ENV FIXNA_APP_ENV=demo
 EXPOSE 8080
 ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-jar", "app.jar"]
