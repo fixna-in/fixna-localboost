@@ -95,9 +95,12 @@ Generate JWT (PowerShell):
 
 The app does **not** seed test data on staging. After Flyway has created tables, run once in **Neon SQL Editor**:
 
-`tools/sql/neon-demo-seed.sql` — replace `REPLACE_WITH_BCRYPT_HASH`, then execute.
+1. `tools/sql/neon-demo-seed.sql` — replace `REPLACE_WITH_BCRYPT_HASH`, then execute.
+2. `tools/sql/neon-demo-data.sql` — campaigns, location, leads, metrics (idempotent).
 
 Login: `owner@example.com` + the password you hashed.
+
+Do **not** run `tools/sql/demo-data.sql` on Neon — it is psql-only for local `localboost` on localhost.
 
 ### 2.2 Custom domain `api.fixna.in`
 
@@ -180,9 +183,5 @@ Optional: redirect `fixna.in` → `app.fixna.in` in Vercel or Cloudflare.
 | `infrastructure/demo/render.env.example` | Env var template |
 | `infrastructure/demo/vercel.env.example` | Frontend env template |
 | `frontend/vercel.json` | Vercel build settings |
-
----
-
-## Appendix: Fly.io (optional, requires payment card)
-
-Fly is not used for the free demo. Config remains in `backend/fly.toml` if you add billing later. See Fly docs or git history for manual deploy steps.
+| `tools/sql/neon-demo-seed.sql` | Demo user + tenant (Neon, once) |
+| `tools/sql/neon-demo-data.sql` | Demo campaigns, leads, metrics (Neon) |

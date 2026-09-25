@@ -1,23 +1,27 @@
 # Current Task
 
-Task: Production track — OpenTelemetry + CI hardening
-Phase: production
+Task: Shared demo deployment (fixna.in)
+Phase: production / demo
 Status: IN_PROGRESS
 
-## Completed this session
-- [x] Fixed compile error (`PlatformException.getPlatform()` in launch logging).
-- [x] Fixed Log4j2 test config (INFO levels for `fixna.access`/`fixna.telemetry`,
-  `%ex{short}` pattern).
-- [x] Removed duplicate `Application.java` (canonical main: `FixnaApplication`).
-- [x] Added Micrometer OTel bridge + OTLP exporter dependencies.
-- [x] Wired trace/span ids into MDC via `RequestIdFilter`.
-- [x] Profile-based OTLP export config (off local/test, on dev/staging/prod).
-- [x] CI frontend job switched to `npm ci` + lock-file cache.
-- [x] Backend tests green (200 run, 6 skipped); frontend build green.
+## Completed (2026-09-26)
+- [x] Render API deployed and healthy (`fixna-localboost.onrender.com`)
+- [x] Neon database `fixna` + Flyway migrations
+- [x] Staging profile: no Redis, no test-data seed, no Spring default password
+- [x] `render.yaml`, `backend/Dockerfile`, deployment docs
+- [x] Neon SQL: `neon-demo-seed.sql` + `neon-demo-data.sql`
+- [x] Removed Fly.io and other unused deploy artifacts
+- [x] Memory bank + changelog updated
 
-## Next
+## In progress (operator)
+- [ ] Vercel frontend deploy (`frontend/`, env vars)
+- [ ] DNS CNAME: `api.fixna.in` → Render, `app.fixna.in` → Vercel
+- [ ] Render `FIXNA_CORS_ALLOWED_ORIGINS` includes frontend URL
+- [ ] End-to-end smoke test on custom domains
+
+## Next (engineering backlog)
 - [ ] CI: Docker image build for backend
 - [ ] CI: test coverage reporting
 - [ ] CI: container image security scan
-- [ ] Deployment workflow / infrastructure docs
 - [ ] Wire Vitest for frontend unit tests
+- [ ] Generate `docs/03-api/openapi.yaml` from springdoc

@@ -48,7 +48,10 @@
 - [x] OpenTelemetry foundation (Micrometer OTel bridge, OTLP export in
   dev/staging/prod, trace/span MDC via RequestIdFilter, export disabled in
   local/test)
-- [ ] CI/CD (Docker image build, coverage gates, security scan)
+- [x] Shared demo deployment docs + Render Blueprint (`render.yaml`, Dockerfile,
+  staging profile, Neon SQL seeds, `docs/07-operations/deployment.md`)
+- [x] Render API live (`fixna-localboost.onrender.com`, health UP)
+- [ ] CI/CD (Docker image build in CI, coverage gates, security scan)
 - [x] E2E (WF12 verified 2026-09-15: Testcontainers full-journey suite —
   register→…→launch→metrics→leads→analytics, cross-tenant denial, invalid
   input, idempotent launch, demo mode; runs on CI ubuntu runners with
@@ -56,7 +59,8 @@
   accuracy fixed)
 - [x] Environment profiles (WF13 verified 2026-09-15: 178 backend tests +
   frontend build green; committed as cc95cc0)
-- [ ] Deployment
+- [x] Deployment — API on Render; Vercel + custom DNS operator steps documented
+- [ ] Vercel frontend + `api.fixna.in` / `app.fixna.in` DNS (operator)
 
 ## Known gaps
 - `docs/03-api/openapi.yaml` is still a stub — generate from springdoc when ready.

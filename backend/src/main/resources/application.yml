@@ -1,5 +1,5 @@
 server:
-  # SERVER_PORT for local/Fly; Render and other PaaS inject PORT.
+  # SERVER_PORT for local dev; Render and other PaaS inject PORT.
   port: ${SERVER_PORT:${PORT:8080}}
 
 spring:

@@ -13,8 +13,9 @@ React and TypeScript patterns. Prefer simple, maintainable designs over unnecess
 complexity.
 
 ## Cursor configuration
-Agent rules, workflows and task tracking live in `.cursor/`.
-See `.cursor/README.md` for the full index.
+Agent rules, workflows, task tracking and deployment context live in `.cursor/`.
+See `.cursor/README.md` for the full index. For shared-demo / ops work, read
+`.cursor/memorybank/active-context.md` first.
 
 ## Before every change
 1. Read this file.

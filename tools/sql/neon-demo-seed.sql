@@ -1,8 +1,9 @@
 -- Neon shared demo seed (database: fixna). Run once in Neon SQL Editor.
 -- 1. Flyway migrations must have run (first API deploy applies schema).
 -- 2. Replace REPLACE_WITH_BCRYPT_HASH below with a BCrypt hash of your demo password.
---    Generate locally: mvn -f backend/pom.xml -q exec:java -Dexec.mainClass=in.fixna.platform.common.util.PasswordUtility -Dexec.args="YourPassword"
+--    Generate locally: tools\password-tool.cmd hash
 -- 3. Skips entirely if owner@example.com already exists.
+-- 4. Then run tools/sql/neon-demo-data.sql for campaigns, leads, metrics, etc.
 -- App does NOT run this on startup (fixna.test-data.enabled=false on staging).
 
 WITH existing AS (

@@ -1,62 +1,41 @@
--- LOCAL DEVELOPMENT ONLY (psql on localhost). Do NOT run on Neon.
--- For Neon shared demo after neon-demo-seed.sql, use tools/sql/neon-demo-data.sql instead.
--- Supply a BCrypt hash via FIXNA_TEST_PASSWORD_HASH (not a plaintext password).
--- Standalone snapshot of the atomic fixture; existing accounts remain unchanged.
-\set ON_ERROR_STOP on
-SELECT current_database() = 'localboost' AND
-       inet_server_addr() IN ('127.0.0.1'::inet, '::1'::inet) AS local_database
-\gset
-\if :local_database
-\else
-  \echo 'Refusing seed: connect to localboost on localhost.'
-  \quit 1
-\endif
-\getenv seed_hash FIXNA_TEST_PASSWORD_HASH
-SELECT :'seed_hash' ~ '^\$2[aby]\$[0-9]{2}\$[./A-Za-z0-9]{53}$' AS valid_hash
-\gset
-\if :valid_hash
-  SELECT quote_literal(:'seed_hash') AS "passwordHash" \gset
--- Local test fixture only; executed by LocalTestDataSeeder after Flyway.
--- :passwordHash is bound by JDBC, never interpolated or stored as plaintext.
--- All rows are inserted atomically by this single PostgreSQL statement.
--- An existing email skips the entire fixture, including memberships.
-WITH new_user AS (
-    INSERT INTO users (email, password_hash, first_name, last_name)
-    VALUES ('owner@example.com', :passwordHash, 'Test', 'Owner')
-    ON CONFLICT (email) DO NOTHING
-    RETURNING id
-), new_tenant AS (
-    INSERT INTO tenants (name, tenant_type)
-    SELECT 'Fixna Demo Workspace', 'SMB' FROM new_user
-    RETURNING id
-), new_membership AS (
-    INSERT INTO tenant_memberships (tenant_id, user_id, role)
-    SELECT t.id, u.id, 'TENANT_OWNER' FROM new_tenant t CROSS JOIN new_user u
-    RETURNING tenant_id
-), new_business AS (
-    INSERT INTO businesses (tenant_id, name, category, description)
-    SELECT tenant_id, 'Demo Neighbourhood Cafe', 'CAFE',
-           'Fictional local test business. Not a real advertiser.'
-    FROM new_membership
-    RETURNING id, tenant_id
+-- Neon shared demo — supplemental data (run AFTER neon-demo-seed.sql).
+-- Requires owner@example.com and business "Demo Neighbourhood Cafe".
+-- Idempotent: skips if demo campaigns already exist.
+-- Safe to run in Neon SQL Editor (plain PostgreSQL, no psql meta-commands).
+
+WITH demo_ctx AS (
+    SELECT b.id AS business_id, b.tenant_id
+    FROM users u
+    JOIN tenant_memberships tm ON tm.user_id = u.id
+    JOIN businesses b ON b.tenant_id = tm.tenant_id
+    WHERE u.email = 'owner@example.com'
+      AND b.name = 'Demo Neighbourhood Cafe'
+    LIMIT 1
+), guard AS (
+    SELECT d.business_id, d.tenant_id
+    FROM demo_ctx d
+    WHERE NOT EXISTS (
+        SELECT 1 FROM campaigns c
+        WHERE c.business_id = d.business_id
+          AND c.name = 'DEMO - Cafe opening results (synthetic)'
+    )
 ), new_location AS (
     INSERT INTO business_locations
         (tenant_id, business_id, address_line, city, state, postal_code, country)
-    SELECT tenant_id, id, 'Demo location, Sector 18', 'Noida',
+    SELECT g.tenant_id, g.business_id, 'Demo location, Sector 18', 'Noida',
            'Uttar Pradesh', '201301', 'India'
-    FROM new_business
-    RETURNING id
-), new_subscription AS (
-    INSERT INTO subscriptions (tenant_id, plan_code, status, starts_at)
-    SELECT id, 'STARTER', 'ACTIVE', now() FROM new_tenant
+    FROM guard g
+    WHERE NOT EXISTS (
+        SELECT 1 FROM business_locations bl WHERE bl.business_id = g.business_id
+    )
     RETURNING id
 ), new_campaigns AS (
     INSERT INTO campaigns
         (tenant_id, business_id, name, objective, status, total_budget, currency, start_at, end_at)
-    SELECT b.tenant_id, b.id, v.name, v.objective, v.status, v.budget, 'INR',
+    SELECT g.tenant_id, g.business_id, v.name, v.objective, v.status, v.budget, 'INR',
         CASE WHEN v.status = 'COMPLETED' THEN now() - interval '8 days' ELSE now() + interval '1 day' END,
         CASE WHEN v.status = 'COMPLETED' THEN now() - interval '1 day' ELSE now() + interval '8 days' END
-    FROM new_business b CROSS JOIN (VALUES
+    FROM guard g CROSS JOIN (VALUES
         ('DEMO - Cafe opening results (synthetic)', 'LEAD_GENERATION', 'COMPLETED', 7000.00),
         ('DEMO - Weekend coffee offer', 'STORE_VISITS', 'DRAFT', 3500.00)
     ) AS v(name, objective, status, budget)
@@ -64,7 +43,8 @@ WITH new_user AS (
 ), new_offers AS (
     INSERT INTO campaign_offers (tenant_id, campaign_id, title, description, promo_code)
     SELECT tenant_id, id, 'Demo coffee and snack combo',
-        'Fictional promotion for local testing only.', 'DEMOCOFFEE' FROM new_campaigns
+        'Fictional promotion for shared demo only.', 'DEMOCOFFEE'
+    FROM new_campaigns
     RETURNING id
 ), new_channels AS (
     INSERT INTO campaign_channels (tenant_id, campaign_id, channel, allocated_budget)
@@ -95,7 +75,7 @@ WITH new_user AS (
         'demo.customer.' || n || '@example.com',
         CASE WHEN n <= 3 THEN 'NEW' WHEN n <= 5 THEN 'CONTACTED'
              WHEN n <= 7 THEN 'QUALIFIED' WHEN n <= 9 THEN 'CONVERTED' ELSE 'LOST' END,
-        'LOCAL_DEMO_SYNTHETIC', now() - interval '1 day'
+        'NEON_DEMO_SYNTHETIC', now() - interval '1 day'
     FROM new_campaigns c CROSS JOIN generate_series(1, 10) AS n
     WHERE c.status = 'COMPLETED'
     RETURNING id
@@ -109,9 +89,16 @@ WITH new_user AS (
     WHERE c.status = 'COMPLETED'
     RETURNING id
 )
-SELECT count(*) FROM new_location;
-
-\else
-  \echo 'FIXNA_TEST_PASSWORD_HASH must contain a BCrypt hash.'
-  \quit 1
-\endif
+SELECT CASE
+    WHEN NOT EXISTS (SELECT 1 FROM demo_ctx) THEN
+        'error: demo business not found — run neon-demo-seed.sql first'
+    WHEN EXISTS (
+        SELECT 1 FROM campaigns c
+        JOIN demo_ctx d ON c.business_id = d.business_id
+        WHERE c.name = 'DEMO - Cafe opening results (synthetic)'
+    ) AND NOT EXISTS (SELECT 1 FROM new_campaigns) THEN
+        'skipped: demo campaigns already exist'
+    WHEN EXISTS (SELECT 1 FROM new_campaigns) THEN
+        'seeded: location, campaigns, leads, metrics'
+    ELSE 'no-op'
+END AS result;

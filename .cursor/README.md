@@ -10,6 +10,7 @@ for the Fixna LocalBoost project.
 | `rules/` | Persistent agent rules (`.mdc` files with YAML frontmatter) |
 | `workflows/` | Phase-by-phase implementation workflows (00–14) |
 | `tasks/` | Current task status and project backlog |
+| `memorybank/` | Live deployment context and project state for agents |
 
 ## Getting started
 
@@ -17,6 +18,7 @@ for the Fixna LocalBoost project.
 2. Cursor automatically loads `rules/` with `alwaysApply: true`.
 3. File-specific rules activate when matching files are open (e.g. `backend/**`).
 4. Check `tasks/CURRENT-TASK.md` for active work and `tasks/BACKLOG.md` for status.
+5. Read `memorybank/active-context.md` for deployment state and current URLs.
 
 ## Rules index
 
@@ -37,6 +39,7 @@ for the Fixna LocalBoost project.
 
 ## Migration note
 
-This project was originally configured for Cline (`.cline/`, `.clinerules/`,
-`memorybank/`). Those directories have been replaced by this `.cursor/` layout.
-Canonical Flyway migrations live in `backend/src/main/resources/db/migration/`.
+This project was originally configured for Cline (`.cline/`, `.clinerules/`).
+Agent context now lives under `.cursor/` including `memorybank/` for deployment
+and session state. Canonical Flyway migrations live in
+`backend/src/main/resources/db/migration/`.

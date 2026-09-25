@@ -204,7 +204,6 @@ Full milestone validation should pass both before merging.
 | `.github/workflows/ci.yml` | Test backend + build frontend on PR/push |
 | Render (`render.yaml` + dashboard) | Auto-deploy API on push to `main` (free, no card) |
 | Vercel (connect in dashboard) | Auto-deploy frontend on push to `main` |
-| `.github/workflows/deploy-api.yml` | Optional Fly.io deploy (requires payment card) |
 
 Setup: [docs/07-operations/deployment.md](docs/07-operations/deployment.md)
 

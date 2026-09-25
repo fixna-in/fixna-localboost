@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased — shared demo deployment (fixna.in, 2026-09-26)
+
+- **Stack:** Neon PostgreSQL (`fixna`) + Render API (Docker, free tier) + Vercel
+  frontend (planned). Documented in `docs/07-operations/deployment.md`.
+- Added `render.yaml` Render Blueprint; `backend/Dockerfile` multi-stage build
+  (`fixna-api.jar`), `ENV SPRING_PROFILES_ACTIVE=staging` and `FIXNA_APP_ENV=demo`.
+- Staging hardening: exclude `UserDetailsServiceAutoConfiguration` (no generated
+  security password in logs), Redis autoconfig excluded in `application-staging.yml`,
+  `management.health.redis.enabled: false`, `fixna.test-data.enabled: false`.
+- Added `DeploymentStartupLogger` — logs active profile; warns if staging missing.
+- Neon manual seed: `tools/sql/neon-demo-seed.sql` (user/tenant/business) and
+  `tools/sql/neon-demo-data.sql` (campaigns, leads, metrics; idempotent).
+- `tools/sql/demo-data.sql` header clarifies local-psql-only; not for Neon.
+- `application.yml` — `server.port` supports Render `PORT` env var.
+- **Cleanup:** removed abandoned Fly.io config (`backend/fly.toml`,
+  `infrastructure/demo/fly.secrets.example.env`, `.github/workflows/deploy-api.yml`),
+  unused `frontend/Dockerfile`, stub `docs/08-operations.md`, unused
+  `infrastructure/nginx/nginx.conf`.
+- Added `.cursor/memorybank/` for agent deployment context.
+- API verified live: `https://fixna-localboost.onrender.com/actuator/health` → UP.
+
 ## Unreleased — OpenTelemetry and CI hardening
 
 - Added Micrometer OpenTelemetry bridge and OTLP trace exporter (export
