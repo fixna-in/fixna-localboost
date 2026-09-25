@@ -10,6 +10,6 @@ FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 RUN useradd --system --uid 10001 --create-home appuser
 USER appuser
-COPY --from=build /workspace/target/fixna-api-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /workspace/target/fixna-api.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-jar", "app.jar"]
