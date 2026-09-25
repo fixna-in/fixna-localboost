@@ -19,8 +19,9 @@ import in.fixna.platform.common.web.FixnaException;
 
 /**
  * AI recommendation application service (flow per rules 11/13):
- * request business rules -> provider -> schema validation of output ->
- * usage/cost recording -> audit -> recommendation returned for USER APPROVAL.
+ * input business rules -> quota -> provider -> schema validation ->
+ * output business rules -> platform compatibility -> usage/audit ->
+ * recommendation returned for USER APPROVAL.
  * AI is advisory: this service never mutates campaign state, budgets or
  * launch status, and never touches credentials.
  */
@@ -32,6 +33,7 @@ public class AiRecommendationService {
     private final AIProvider provider;
     private final AiSchemaValidator schemaValidator;
     private final AiBusinessValidator businessValidator;
+    private final AiPlatformCompatibilityValidator platformCompatibilityValidator;
     private final AiQuotaChecker quotaChecker;
     private final AiUsageRepository usageRepository;
     private final AuditPublisher audit;
@@ -40,12 +42,14 @@ public class AiRecommendationService {
             AIProvider provider,
             AiSchemaValidator schemaValidator,
             AiBusinessValidator businessValidator,
+            AiPlatformCompatibilityValidator platformCompatibilityValidator,
             AiQuotaChecker quotaChecker,
             AiUsageRepository usageRepository,
             AuditPublisher audit) {
         this.provider = provider;
         this.schemaValidator = schemaValidator;
         this.businessValidator = businessValidator;
+        this.platformCompatibilityValidator = platformCompatibilityValidator;
         this.quotaChecker = quotaChecker;
         this.usageRepository = usageRepository;
         this.audit = audit;
@@ -83,8 +87,10 @@ public class AiRecommendationService {
                         "AI_PROVIDER_FAILED", HttpStatus.BAD_GATEWAY, "AI provider call failed", ex);
             }
         }
-        // Output is untrusted until schema-validated; no usage row on failure.
+        // Output is untrusted until validated; no usage row on failure.
         schemaValidator.validate(type, result.data());
+        businessValidator.validateOutput(type, result.data());
+        platformCompatibilityValidator.validate(type, result.data());
         recordUsage(tenantId, userId, type, result, (System.nanoTime() - startedAt) / 1_000_000L);
         LoggingContext.putOperation(LoggingConstants.AI_RECOMMENDATION_GENERATE);
         LoggingContext.putCampaignId(campaignId);

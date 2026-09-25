@@ -86,7 +86,8 @@ public class LeadService {
         LoggingContext.putOperation(LoggingConstants.LEAD_CREATE);
         LoggingContext.putCampaignId(campaignId);
         LOG.debug("Lead captured leadId={} businessId={} campaignId={} tenantId={}",
-                lead.getId(), businessId, campaignId, tenantId);        audit.publish(new AuditEvent(
+                lead.getId(), businessId, campaignId, tenantId);
+        audit.publish(new AuditEvent(
                 "lead.created", tenantId, TenantContext.requireUserId(), "lead",
                 lead.getId().toString(), Map.of("business", businessId.toString()), null));
         notifications.publish(new Notification(

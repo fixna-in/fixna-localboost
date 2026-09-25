@@ -208,3 +208,9 @@ Add these only after the basic pipeline is stable:
 
 See `AGENTS.md` and `.cursor/rules/` before using an AI coding agent.
 
+## Onboarding documentation
+
+- [Onboarding hub](docs/00-product/ONBOARDING.md) — start here
+- [Client setup & configuration](docs/00-product/client-onboarding.md) — environments, env vars, first-run
+- [Business flows](docs/00-product/business-flows.md) — every feature, step-by-step
+

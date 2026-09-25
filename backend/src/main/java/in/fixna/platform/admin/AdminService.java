@@ -13,12 +13,12 @@ import in.fixna.platform.billing.Subscription;
 import in.fixna.platform.billing.SubscriptionService;
 import in.fixna.platform.common.tenant.TenantContext;
 import in.fixna.platform.common.web.FixnaException;
+import in.fixna.platform.tenant.Tenant;
 import in.fixna.platform.tenant.TenantMembershipRepository;
 import in.fixna.platform.tenant.TenantRepository;
 import in.fixna.platform.tenant.TenantType;
 import in.fixna.platform.tenant.dto.MembershipResponse;
 import in.fixna.platform.user.UserRepository;
-import in.fixna.platform.admin.AdminController.TenantSummary;
 
 /**
  * Platform administration service. Gated by INTERNAL tenant membership —
@@ -70,12 +70,28 @@ public class AdminService {
 
     /** Sets any tenant's plan. INTERNAL members only; no payment provider. */
     @Transactional
-    public Subscription updatePlan(UUID tenantId, PlanCode plan) {
+    public Subscription updatePlan(UUID tenantId, String planCodeRaw) {
         requirePlatformAdmin();
         if (tenantId == null) {
             throw new FixnaException("TENANT_REQUIRED", HttpStatus.BAD_REQUEST, "tenantId is required");
         }
-        return subscriptions.updatePlan(tenantId, plan);
+        return subscriptions.updatePlan(tenantId, parsePlanCode(planCodeRaw));
+    }
+
+    /** Rejects unknown plan codes instead of silently defaulting. */
+    static PlanCode parsePlanCode(String planCodeRaw) {
+        if (planCodeRaw == null || planCodeRaw.isBlank()) {
+            throw new FixnaException(
+                    "PLAN_CODE_REQUIRED", HttpStatus.BAD_REQUEST, "planCode is required");
+        }
+        try {
+            return PlanCode.valueOf(planCodeRaw.trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new FixnaException(
+                    "INVALID_PLAN_CODE",
+                    HttpStatus.BAD_REQUEST,
+                    "Unknown plan code: " + planCodeRaw.trim());
+        }
     }
 
     /** Fail-closed gate: caller must belong to an INTERNAL tenant. */
@@ -87,6 +103,13 @@ public class AdminService {
         if (tenant.getTenantType() != TenantType.INTERNAL) {
             throw new FixnaException(
                     "FORBIDDEN", HttpStatus.FORBIDDEN, "Platform admin access required");
+        }
+    }
+
+    /** Minimal tenant summary for platform admin listings. */
+    public record TenantSummary(UUID id, String name) {
+        public static TenantSummary from(Tenant tenant) {
+            return new TenantSummary(tenant.getId(), tenant.getName());
         }
     }
 }

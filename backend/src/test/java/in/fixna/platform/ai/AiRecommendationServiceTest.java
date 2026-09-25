@@ -14,6 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import in.fixna.platform.common.audit.AuditPublisher;
 import in.fixna.platform.common.tenant.TenantContext;
 import in.fixna.platform.common.web.FixnaException;
+import in.fixna.platform.platform.MockGoogleAdsAdapter;
+import in.fixna.platform.platform.MockMetaAdsAdapter;
+import in.fixna.platform.platform.MockWhatsAppAdapter;
+import in.fixna.platform.platform.PlatformAdapterRegistry;
 import in.fixna.platform.tenant.MembershipRole;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,9 +42,12 @@ class AiRecommendationServiceTest {
 
     @BeforeEach
     void setUp() {
+        AiPlatformCompatibilityValidator platformCompatibilityValidator = new AiPlatformCompatibilityValidator(
+                new PlatformAdapterRegistry(java.util.List.of(
+                        new MockGoogleAdsAdapter(), new MockMetaAdsAdapter(), new MockWhatsAppAdapter())));
         service = new AiRecommendationService(
                 provider, new AiSchemaValidator(), new AiBusinessValidator(),
-                quotaChecker, usageRepository, audit);
+                platformCompatibilityValidator, quotaChecker, usageRepository, audit);
         TenantContext.set(tenantId, userId, MembershipRole.TENANT_OWNER);
     }
 
@@ -89,6 +96,24 @@ class AiRecommendationServiceTest {
                 .extracting(ex -> ((FixnaException) ex).getCode())
                 .isEqualTo("AI_VALIDATION_FAILED");
         verify(provider, never()).generate(any());
+        verify(usageRepository, never()).save(any(AiUsage.class));
+    }
+
+    @Test
+    void unsupportedPlatformRejectedWithoutUsage() {
+        when(provider.generate(any())).thenReturn(new RecommendationResult(
+                "mock", "m", "v1",
+                Map.of("objective", "FOOTFALL",
+                        "channels", java.util.List.of("TIKTOK"),
+                        "recommendedBudget", 100,
+                        "rationale", "x"),
+                1, 1, 1L));
+
+        assertThatThrownBy(() -> service.recommend(
+                        RecommendationType.CAMPAIGN_STRATEGY, null, null, Map.of()))
+                .isInstanceOf(FixnaException.class)
+                .extracting(ex -> ((FixnaException) ex).getCode())
+                .isEqualTo("AI_PLATFORM_INCOMPATIBLE");
         verify(usageRepository, never()).save(any(AiUsage.class));
     }
 }

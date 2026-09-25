@@ -15,6 +15,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class PlatformAdapterRegistry {
 
+    private static final Map<String, String> CHANNEL_ALIASES = Map.of(
+            "GOOGLE_ADS", "GOOGLE",
+            "META_ADS", "META");
+
     private final Map<String, AdvertisingPlatformAdapter> byPlatform;
 
     public PlatformAdapterRegistry(java.util.List<AdvertisingPlatformAdapter> adapters) {
@@ -42,6 +46,10 @@ public class PlatformAdapterRegistry {
     }
 
     private String normalize(String value) {
-        return value == null ? "" : value.trim().toUpperCase(Locale.ROOT);
+        if (value == null) {
+            return "";
+        }
+        String upper = value.trim().toUpperCase(Locale.ROOT);
+        return CHANNEL_ALIASES.getOrDefault(upper, upper);
     }
 }

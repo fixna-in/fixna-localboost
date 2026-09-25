@@ -32,7 +32,7 @@ INTERNAL platform admins only, else 403 `FORBIDDEN`.
 - `GET /admin/tenants?page=&size=` -> `[{id, name}]`
 - `GET /admin/tenants/{tenantId}/members` -> `[{userId, email, role}]`
 - `PUT /admin/tenants/{tenantId}/plan` body `{"planCode":"STARTER"}` ->
-  `{tenantId, planCode, status}`. Unknown codes fail closed to FREE.
+  `{tenantId, planCode, status}`. Unknown codes -> 400 `INVALID_PLAN_CODE`.
 
 Errors: 403 `FORBIDDEN` (non-INTERNAL caller), 400 `TENANT_REQUIRED`
 (missing tenantId).

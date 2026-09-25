@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import in.fixna.platform.billing.PlanCode;
-import in.fixna.platform.tenant.Tenant;
-import in.fixna.platform.tenant.TenantRepository;
+import in.fixna.platform.admin.AdminService.TenantSummary;
 import in.fixna.platform.tenant.dto.MembershipResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +32,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class AdminController {
 
     private final AdminService adminService;
-    private final TenantRepository tenants;
 
-    public AdminController(AdminService adminService, TenantRepository tenants) {
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
-        this.tenants = tenants;
     }
 
     @Operation(summary = "List tenants (INTERNAL platform admins only)")
@@ -59,29 +55,15 @@ public class AdminController {
     @PutMapping("/tenants/{tenantId}/plan")
     public ResponseEntity<PlanView> updatePlan(
             @PathVariable UUID tenantId, @Valid @RequestBody UpdatePlanRequest request) {
-        var subscription = adminService.updatePlan(tenantId, request.toPlanCode());
+        var subscription = adminService.updatePlan(tenantId, request.planCode());
         return ResponseEntity.ok(new PlanView(
                 subscription.getTenantId(), subscription.getPlanCode(), subscription.getStatus()));
     }
 
-    public record UpdatePlanRequest(@NotBlank String planCode) {
-        PlanCode toPlanCode() {
-            try {
-                return PlanCode.valueOf(planCode.trim().toUpperCase());
-            } catch (IllegalArgumentException ex) {
-                return PlanCode.FREE;
-            }
-        }
-    }
+    public record UpdatePlanRequest(@NotBlank String planCode) {}
 
     /** Plan view for admin updates — no payment details. */
     public record PlanView(UUID tenantId, String planCode, String status) {}
 
-    /** Minimal tenant summary — no secrets, no cross-tenant details. */
-    public record TenantSummary(UUID id, String name) {
-        public static TenantSummary from(Tenant tenant) {
-            return new TenantSummary(tenant.getId(), tenant.getName());
-        }
-    }
 }
 

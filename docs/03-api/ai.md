@@ -23,8 +23,10 @@ Response 200:
 
 ## Errors
 - 400 `AI_VALIDATION_FAILED` — request payload violates business rules (BR-4 shadow check, audience bounds).
-- 422 `AI_RESPONSE_INVALID` — provider output failed structural validation (AI output is untrusted).
-- 502 `AI_PROVIDER_ERROR` — provider failure.
+- 502 `AI_RESPONSE_INVALID` — provider output failed structural schema validation (AI output is untrusted).
+- 502 `AI_OUTPUT_BUSINESS_INVALID` — provider output failed business rules (e.g. audience bounds, duplicate allocation channels).
+- 502 `AI_PLATFORM_INCOMPATIBLE` — output references a platform/channel with no registered adapter.
+- 502 `AI_PROVIDER_FAILED` — provider failure.
 
 ## Safety (per AI rules)
 - Advisory only: never mutates campaign state, budgets, or platform adapters.

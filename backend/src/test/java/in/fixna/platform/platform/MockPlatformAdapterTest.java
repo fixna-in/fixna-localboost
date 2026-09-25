@@ -77,4 +77,11 @@ class MockPlatformAdapterTest {
         assertThat(registry.supports(" PINTEREST ")).isFalse();
         assertThat(registry.platforms()).containsExactlyInAnyOrder("GOOGLE", "META", "WHATSAPP");
     }
+
+    @Test
+    void registryResolvesCampaignChannelAliases() {
+        assertThat(registry.supports("GOOGLE_ADS")).isTrue();
+        assertThat(registry.supports("META_ADS")).isTrue();
+        assertThat(registry.forChannel("GOOGLE_ADS").platform()).isEqualTo("GOOGLE");
+    }
 }
