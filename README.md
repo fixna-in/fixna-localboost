@@ -41,6 +41,9 @@ multi-tenant local advertising orchestration platform for SMBs.
 - `https://fixna.in` — brand/marketing site
 - `https://app.fixna.in` — application
 - `https://api.fixna.in` — API
+
+**Shared demo deployment** (Neon + Render + Vercel, no card): see
+[docs/07-operations/deployment.md](docs/07-operations/deployment.md).
 - `https://admin.fixna.in` — administration (future)
 - `https://docs.fixna.in` — documentation (future)
 
@@ -194,16 +197,23 @@ Frontend:
 
 Full milestone validation should pass both before merging.
 
-## Future CI stages
+## CI/CD
 
-Add these only after the basic pipeline is stable:
+| Workflow | Purpose |
+|----------|---------|
+| `.github/workflows/ci.yml` | Test backend + build frontend on PR/push |
+| Render (`render.yaml` + dashboard) | Auto-deploy API on push to `main` (free, no card) |
+| Vercel (connect in dashboard) | Auto-deploy frontend on push to `main` |
+| `.github/workflows/deploy-api.yml` | Optional Fly.io deploy (requires payment card) |
+
+Setup: [docs/07-operations/deployment.md](docs/07-operations/deployment.md)
+
+## Future CI stages
 
 - Checkstyle/SpotBugs
 - Test coverage
-- PostgreSQL integration tests
-- Docker image build
+- Branch protection (CI must pass before deploy)
 - Container image security scanning
-- Deployment to a VPS/cloud environment
 
 
 See `AGENTS.md` and `.cursor/rules/` before using an AI coding agent.

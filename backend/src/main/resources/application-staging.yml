@@ -1,19 +1,30 @@
-# Staging environment — mirrors prod concerns (HSTS, no dev placeholder)
-# but remains safe for demo data. Mandatory configuration comes from the
-# environment; missing values fail startup.
+# Staging / shared demo (app.fixna.in + api.fixna.in). Mirrors prod TLS concerns
+# but keeps mock AI/adapters. Redis is optional — excluded unless REDIS_URL is set.
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
 fixna:
+  app-env: ${FIXNA_APP_ENV:demo}
   security:
     jwt:
       secret: ${FIXNA_JWT_SECRET:}
     hsts-enabled: ${FIXNA_HSTS_ENABLED:true}
   ai:
     provider: ${FIXNA_AI_PROVIDER:mock}
+  platform:
+    default-mode: ${FIXNA_PLATFORM_MODE:mock}
+  test-data:
+    enabled: false
+
 management:
   otlp:
     tracing:
-      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
       export:
-        enabled: ${OTEL_EXPORTER_OTLP_ENABLED:true}
+        enabled: ${OTEL_EXPORTER_OTLP_ENABLED:false}
+
 logging:
   level:
     root: INFO

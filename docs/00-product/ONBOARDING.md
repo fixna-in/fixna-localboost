@@ -49,6 +49,7 @@ Tenant → Users (memberships + RBAC) → Businesses → Locations
 |------|------|
 | One-command local demo (Windows, no Docker) | `tools/start-local-demo.cmd` — see [README](../../README.md) |
 | Persistent local PostgreSQL | `application-local` profile + `tools/sql/schema.sql` + demo data |
+| **Shared demo on fixna.in** | [Deployment guide](../07-operations/deployment.md) — Neon + Render + Vercel |
 | API exploration | `http://localhost:8080/swagger-ui.html` after backend start |
 | Frontend | `cd frontend && npm ci && npm run dev` with `frontend/.env.local` |
 
@@ -57,5 +58,6 @@ Tenant → Users (memberships + RBAC) → Businesses → Locations
 - Requirements: `requirements/USER-STORIES.md`, `requirements/FEATURE-MATRIX.md`
 - API contracts: `docs/03-api/`
 - Architecture: `docs/02-architecture/`
+- Deployment: `docs/07-operations/deployment.md`
 - Security: `docs/07-operations/security-hardening.md`
 - Agent rules: `AGENTS.md`, `.cursor/rules/`

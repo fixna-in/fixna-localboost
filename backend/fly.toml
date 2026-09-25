@@ -1,0 +1,40 @@
+# Fixna LocalBoost API — shared demo on Fly.io (api.fixna.in)
+# Deploy from backend/: fly deploy
+# Secrets: fly secrets set --file ../infrastructure/demo/fly.secrets.env
+
+app = "fixna-localboost-api"
+# sin = Singapore (free tier). bom (Mumbai) requires a paid Fly plan.
+primary_region = "sin"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  SPRING_PROFILES_ACTIVE = "staging"
+  SERVER_PORT = "8080"
+  FIXNA_APP_ENV = "demo"
+  FIXNA_AI_PROVIDER = "mock"
+  FIXNA_PLATFORM_MODE = "mock"
+  FIXNA_BILLING_DEFAULT_PLAN = "STARTER"
+  OTEL_EXPORTER_OTLP_ENABLED = "false"
+  FIXNA_HSTS_ENABLED = "true"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [[http_service.checks]]
+    grace_period = "90s"
+    interval = "15s"
+    method = "GET"
+    path = "/actuator/health"
+    timeout = "5s"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "512mb"

@@ -15,6 +15,7 @@ css-check-result.txt
 .env
 .env.*
 !.env.example
+**/fly.secrets.env
 
 # IDE
 .idea/
