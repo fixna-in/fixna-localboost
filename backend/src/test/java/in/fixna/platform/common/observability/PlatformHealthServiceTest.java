@@ -69,11 +69,8 @@ class PlatformHealthServiceTest {
         when(endpoint.health()).thenReturn(root);
 
         PlatformHealthService service = new PlatformHealthService(
-
+                endpoint, Optional.empty(), "demo", "fixna-localboost-backend", "2026-09-26T18:00:00Z");
 
         assertThat(service.snapshot().deployedAt()).isEqualTo("2026-09-26T18:00:00Z");
-
-        assertThat(service.snapshot().deployedAt()).isEqualTo("2026-09-26T18:30:00Z");
-
     }
 }
