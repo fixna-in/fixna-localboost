@@ -1,25 +1,48 @@
 # Changelog
 
-## Unreleased — shared demo deployment (fixna.in, 2026-09-26)
+## Unreleased
 
-- **Stack:** Neon PostgreSQL (`fixna`) + Render API (Docker, free tier) + Vercel
-  frontend (planned). Documented in `docs/07-operations/deployment.md`.
-- Added `render.yaml` Render Blueprint; `backend/Dockerfile` multi-stage build
-  (`fixna-api.jar`), `ENV SPRING_PROFILES_ACTIVE=staging` and `FIXNA_APP_ENV=demo`.
-- Staging hardening: exclude `UserDetailsServiceAutoConfiguration` (no generated
-  security password in logs), Redis autoconfig excluded in `application-staging.yml`,
-  `management.health.redis.enabled: false`, `fixna.test-data.enabled: false`.
-- Added `DeploymentStartupLogger` — logs active profile; warns if staging missing.
-- Neon manual seed: `tools/sql/neon-demo-seed.sql` (user/tenant/business) and
-  `tools/sql/neon-demo-data.sql` (campaigns, leads, metrics; idempotent).
-- `tools/sql/demo-data.sql` header clarifies local-psql-only; not for Neon.
-- `application.yml` — `server.port` supports Render `PORT` env var.
-- **Cleanup:** removed abandoned Fly.io config (`backend/fly.toml`,
-  `infrastructure/demo/fly.secrets.example.env`, `.github/workflows/deploy-api.yml`),
-  unused `frontend/Dockerfile`, stub `docs/08-operations.md`, unused
-  `infrastructure/nginx/nginx.conf`.
-- Added `.cursor/memorybank/` for agent deployment context.
-- API verified live: `https://fixna-localboost.onrender.com/actuator/health` → UP.
+_No changes yet._
+
+## 1.0.0 — 2026-09-26
+
+**First major release** of Fixna LocalBoost: production-oriented multi-tenant MVP
+with shared demo live at [app.fixna.in](https://app.fixna.in) and API at
+[api.fixna.in](https://api.fixna.in).
+
+### Platform (MVP)
+
+- Multi-tenant SaaS backend (Java 21, Spring Boot 3.5, PostgreSQL, Flyway V1–V9):
+  auth/JWT, tenants/RBAC, businesses, campaigns (lifecycle + idempotent launch),
+  geo/audience/creatives, AI recommendations (mock), mock ad platform adapters,
+  analytics, leads, admin, billing, audit.
+- Next.js 15 frontend: login/register, dashboard, businesses, campaigns, leads.
+- Security: tenant isolation, rate limiting, CORS allowlist, secure headers, prod
+  JWT fail-fast, no generated Spring security password on staging.
+- Observability: Log4j2 structured logging, MDC correlation, Micrometer OTel bridge,
+  `RequestIdFilter` with `X-Request-Id` and optional trace/span MDC (`Optional<Tracer>`).
+
+### Shared demo deployment
+
+- **Stack:** Neon PostgreSQL + Render API (Docker) + Vercel frontend.
+- `render.yaml` Blueprint; `backend/Dockerfile` with `SPRING_PROFILES_ACTIVE=staging`.
+- Staging profile: Redis disabled, no startup seed, mock AI/platforms.
+- Neon manual SQL: `tools/sql/neon-demo-seed.sql`, `tools/sql/neon-demo-data.sql`.
+- Docs: `docs/07-operations/deployment.md`, `.cursor/memorybank/`.
+
+### Brand identity
+
+- Unified Fixna mark (`f•` on `#163e32`, lime `#c7ed94`): favicon, header,
+  login/register hero. Source: `frontend/src/brand/brand-mark-graphic.tsx`.
+
+### Removed
+
+- Abandoned Fly.io config and deploy workflow; unused `frontend/Dockerfile`,
+  `docs/08-operations.md`, `infrastructure/nginx/nginx.conf`.
+
+### Version bump
+
+- Backend `pom.xml` and frontend `package.json`: **1.0.0**.
 
 ## Unreleased — OpenTelemetry and CI hardening
 

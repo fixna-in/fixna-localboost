@@ -1,5 +1,7 @@
 # Project Context — Fixna LocalBoost
 
+**Version:** 1.0.0 (2026-09-26)
+
 ## Product
 
 **Fixna LocalBoost** (`fixna.in`) — multi-tenant SaaS for local businesses to define
@@ -32,10 +34,21 @@ Initial market: India (Noida / Greater Noida / Delhi NCR).
 - Schema changes → new Flyway migration only
 - Controllers are thin; business logic in services
 
+## Brand
+
+Unified mark: white **f** + lime **•** on `#163e32` rounded square.
+Implementation: `frontend/src/brand/brand-mark-graphic.tsx` (favicon, header, auth hero).
+
+## Observability
+
+`RequestIdFilter` — `X-Request-Id` + optional OTel `traceId`/`spanId` in MDC via
+`Optional<Tracer>` injection.
+
 ## Agent entry points
 
 1. `AGENTS.md` — mission and standards
 2. `.cursor/rules/` — persistent rules (`fixna-core`, `security-tenancy`, etc.)
 3. `.cursor/tasks/CURRENT-TASK.md` — active work
 4. `.cursor/memorybank/` — deployment and session context (this folder)
-5. `docs/07-operations/deployment.md` — operator runbook
+5. `.cursor/memorybank/chatgpt-handoff.md` — paste-ready project brief (no secrets)
+6. `docs/07-operations/deployment.md` — operator runbook

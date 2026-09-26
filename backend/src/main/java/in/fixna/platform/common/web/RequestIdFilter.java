@@ -1,6 +1,7 @@
 package in.fixna.platform.common.web;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -9,8 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -37,20 +36,16 @@ public class RequestIdFilter extends OncePerRequestFilter {
 
     private static final Pattern SAFE_ID = Pattern.compile("[A-Za-z0-9_\\-:]{1,64}");
 
-    private final Tracer tracer;
+    private final Optional<Tracer> tracer;
 
-    @Autowired
-    public RequestIdFilter(ObjectProvider<Tracer> tracerProvider) {
-        this.tracer = tracerProvider.getIfAvailable();
+    /** {@code Optional} so Spring injects empty when no {@link Tracer} bean is configured. */
+    public RequestIdFilter(Optional<Tracer> tracer) {
+        this.tracer = tracer != null ? tracer : Optional.empty();
     }
 
     /** Package-visible for unit tests without a Spring context. */
     static RequestIdFilter forTests(Tracer tracer) {
-        return new RequestIdFilter(tracer);
-    }
-
-    private RequestIdFilter(Tracer tracer) {
-        this.tracer = tracer;
+        return new RequestIdFilter(Optional.ofNullable(tracer));
     }
 
     @Override
@@ -73,16 +68,11 @@ public class RequestIdFilter extends OncePerRequestFilter {
     }
 
     private void populateTraceContext() {
-        if (tracer == null) {
-            return;
-        }
-        Span current = tracer.currentSpan();
-        if (current == null) {
-            return;
-        }
-        LoggingContext.putTrace(current.context().traceId(), current.context().spanId());
+        tracer.flatMap(active -> Optional.ofNullable(active.currentSpan()))
+                .ifPresent(span -> LoggingContext.putTrace(
+                        span.context().traceId(), span.context().spanId()));
     }
-
+    
     /** Accepts only safe incoming ids; returns null when a fresh id must be minted. */
     static String sanitize(String incoming) {
         if (incoming == null || incoming.isBlank()) {

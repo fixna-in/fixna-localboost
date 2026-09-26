@@ -1,5 +1,7 @@
 # Fixna Backlog
 
+**Current release:** 1.0.0 (2026-09-26) — shared demo live at fixna.in
+
 ## Foundation
 - [x] Bootstrap repository
 - [x] Backend foundation
@@ -59,8 +61,8 @@
   accuracy fixed)
 - [x] Environment profiles (WF13 verified 2026-09-15: 178 backend tests +
   frontend build green; committed as cc95cc0)
-- [x] Deployment — API on Render; Vercel + custom DNS operator steps documented
-- [ ] Vercel frontend + `api.fixna.in` / `app.fixna.in` DNS (operator)
+- [x] Deployment — API on Render; Vercel + custom DNS live (`app.fixna.in`, `api.fixna.in`)
+- [x] Brand mark unified (favicon, header, auth hero — `frontend/src/brand/`)
 
 ## Known gaps
 - `docs/03-api/openapi.yaml` is still a stub — generate from springdoc when ready.

@@ -14,8 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 /**
  * Aggregated platform health for operators and the versioned public API.
  * Per-component probes also surface on {@code /actuator/health} when details are enabled.
- * Flyway migration health is provided by Spring Boot Actuator (not a custom bean).
- */
+
 @RestController
 @RequestMapping("/api/v1/health")
 public class HealthController {
