@@ -37,5 +37,5 @@
   <dependency><groupId>org.testcontainers</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
   <dependency><groupId>org.testcontainers</groupId><artifactId>postgresql</artifactId><scope>test</scope></dependency>
  </dependencies>
- <build><plugins><plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId><configuration><mainClass>in.fixna.platform.FixnaApplication</mainClass></configuration></plugin></plugins><finalName>fixna-api</finalName></build>
+ <build><plugins><plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId><configuration><mainClass>in.fixna.platform.FixnaApplication</mainClass></configuration><executions><execution><goals><goal>build-info</goal></goals></execution></executions></plugin></plugins><finalName>fixna-api</finalName></build>
 </project>
