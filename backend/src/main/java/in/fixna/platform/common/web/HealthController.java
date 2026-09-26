@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import in.fixna.platform.common.observability.PlatformHealthService;
 import in.fixna.platform.common.observability.dto.PlatformHealthResponse;
-
 import io.swagger.v3.oas.annotations.Operation;
 
 /**
