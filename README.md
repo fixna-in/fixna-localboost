@@ -1,5 +1,7 @@
 # Fixna Platform
 
+**Fixna LocalBoost v1.0.0** — [app.fixna.in](https://app.fixna.in) · [api.fixna.in](https://api.fixna.in)
+
 ## One-command local demo (Windows)
 
 Run `C:\Users\Dell\workspace\fixna-localboost\tools\start-local-demo.cmd`
@@ -41,20 +43,77 @@ multi-tenant local advertising orchestration platform for SMBs.
 - `https://fixna.in` — brand/marketing site
 - `https://app.fixna.in` — application
 - `https://api.fixna.in` — API
-
-**Shared demo deployment** (Neon + Render + Vercel, no card): see
-[docs/07-operations/deployment.md](docs/07-operations/deployment.md).
 - `https://admin.fixna.in` — administration (future)
 - `https://docs.fixna.in` — documentation (future)
 
+## Shared demo (live)
+
+| Component | URL |
+|-----------|-----|
+| Frontend | [app.fixna.in](https://app.fixna.in) |
+| API | [api.fixna.in](https://api.fixna.in) |
+| Health | [api.fixna.in/api/v1/health](https://api.fixna.in/api/v1/health) |
+
+**Stack:** Neon PostgreSQL + Render API (Docker) + Vercel frontend — free-tier
+friendly, no card required. Full setup:
+[docs/07-operations/deployment.md](docs/07-operations/deployment.md).
+
+**Neon demo data** (manual, not on app startup): run
+`tools/sql/neon-demo-seed.sql` then `tools/sql/neon-demo-data.sql` in the Neon SQL
+Editor after Flyway migrations. Do not use `tools/sql/demo-data.sql` on Neon (psql-only,
+for local `localboost`).
+
+**Render env templates:** `infrastructure/demo/render.env.example`,
+`infrastructure/demo/vercel.env.example`.
+
+### Health and observability
+
+`GET /api/v1/health` (public) returns aggregated platform health:
+
+- **status** — overall UP/DOWN (HTTP 200 vs 503)
+- **components** — per-probe status and details (`db`, `diskSpace`, `ping`, `flyway`, `platform`, …)
+- **version** — from Maven `build-info` (currently **1.0.0**)
+- **deployedAt** — `FIXNA_DEPLOYED_AT` on Render when set; otherwise image build time
+- **environment** — `FIXNA_APP_ENV` (e.g. `demo` on Vercel)
+- **service** — `spring.application.name`
+- **timestamp** — snapshot time
+
+Example (trimmed):
+
+```json
+{
+  "status": "UP",
+  "version": "1.0.0",
+  "deployedAt": "2026-09-26T12:00:00Z",
+  "environment": "demo",
+  "service": "fixna-localboost-backend",
+  "components": {
+    "db": { "status": "UP", "details": { "database": "PostgreSQL" } },
+    "flyway": { "status": "UP", "details": { "applied": 9, "pending": 0 } },
+    "platform": { "status": "UP", "details": { "version": "1.0.0", "environment": "demo" } }
+  }
+}
+```
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /api/v1/health` | Aggregated health + version + deploy metadata |
+| `GET /api/v1/health/readiness` | Readiness (503 until Spring context is ready) |
+| `GET /actuator/health` | Actuator component health (details enabled) |
+| `GET /actuator/prometheus` | Metrics |
+
+More: [docs/07-operations/observability.md](docs/07-operations/observability.md).
+
 ## Architecture
-- Frontend: Next.js + React + TypeScript
-- Backend: Java 21 + Spring Boot 3.x
-- Database: PostgreSQL + Flyway
-- Cache: Redis
-- AI: provider abstraction with mock provider for local development
-- External advertising: adapter pattern for Google Ads, Meta Ads and WhatsApp
+- Frontend: Next.js 15 + React + TypeScript ([app.fixna.in](https://app.fixna.in))
+- Backend: Java 21 + Spring Boot 3.5 ([api.fixna.in](https://api.fixna.in))
+- Database: PostgreSQL + Flyway (V1–V9)
+- Cache: Redis (local/dev; disabled on staging demo)
+- AI: provider abstraction with mock provider for local and demo
+- External advertising: adapter pattern for Google Ads, Meta Ads and WhatsApp (mock on demo)
 - Tenancy: shared PostgreSQL schema with mandatory `tenant_id`, designed for future RLS
+- Observability: Log4j2 structured logs, `X-Request-Id` correlation, Micrometer metrics,
+  aggregated `/api/v1/health` with component probes and release metadata
 
 ## Run locally
 
@@ -135,7 +194,8 @@ For backend-only startup, set POSTGRES_PASSWORD securely in your terminal and ru
 | PostgreSQL authentication fails | Use the local profile and supply POSTGRES_PASSWORD for postgres on localhost:5432/localboost. |
 | Frontend shows CORS errors | `FIXNA_CORS_ALLOWED_ORIGINS` must include `http://localhost:3000` (defaults already do). |
 | Schema-validation errors on startup | Flyway migrations must run first; check the startup log for `Successfully applied N migrations`. |
-| Database health is DOWN | Check the local PostgreSQL service and database credentials. |
+| Database health is DOWN | Check the local PostgreSQL service and credentials; inspect `GET /api/v1/health` → `components.db`. |
+| Shared demo health 503 | Verify Neon connectivity, Flyway migrations applied (`components.flyway`), and Render logs for `staging` profile. |
 
 ### Testing
 
@@ -151,9 +211,7 @@ Frontend:
 
 ## CI Pack
 
-## Fixna LocalBoost - GitHub Actions + Cursor CI Pack
-
-This pack adds a lightweight free-tier-friendly CI setup for the Fixna LocalBoost repository.
+Lightweight free-tier-friendly CI for Fixna LocalBoost.
 
 ## Files
 
@@ -205,6 +263,9 @@ Full milestone validation should pass both before merging.
 | Render (`render.yaml` + dashboard) | Auto-deploy API on push to `main` (free, no card) |
 | Vercel (connect in dashboard) | Auto-deploy frontend on push to `main` |
 
+After deploy, smoke-test `https://api.fixna.in/api/v1/health` (status `UP`, version
+`1.0.0`, components populated) and log in at [app.fixna.in](https://app.fixna.in).
+
 Setup: [docs/07-operations/deployment.md](docs/07-operations/deployment.md)
 
 ## Future CI stages
@@ -222,4 +283,6 @@ See `AGENTS.md` and `.cursor/rules/` before using an AI coding agent.
 - [Onboarding hub](docs/00-product/ONBOARDING.md) — start here
 - [Client setup & configuration](docs/00-product/client-onboarding.md) — environments, env vars, first-run
 - [Business flows](docs/00-product/business-flows.md) — every feature, step-by-step
+- [Deployment (Neon + Render + Vercel)](docs/07-operations/deployment.md) — shared demo on fixna.in
+- [Observability & health](docs/07-operations/observability.md) — probes, logs, metrics
 

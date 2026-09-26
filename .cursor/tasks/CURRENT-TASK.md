@@ -1,27 +1,20 @@
 # Current Task
 
-Task: Shared demo deployment (fixna.in)
+Task: Post-1.0.0 maintenance
 Phase: production / demo
-Status: IN_PROGRESS
+Status: COMPLETE (1.0.0 released 2026-09-26)
 
-## Completed (2026-09-26)
-- [x] Render API deployed and healthy (`fixna-localboost.onrender.com`)
-- [x] Neon database `fixna` + Flyway migrations
-- [x] Staging profile: no Redis, no test-data seed, no Spring default password
-- [x] `render.yaml`, `backend/Dockerfile`, deployment docs
-- [x] Neon SQL: `neon-demo-seed.sql` + `neon-demo-data.sql`
-- [x] Removed Fly.io and other unused deploy artifacts
-- [x] Memory bank + changelog updated
+## Release 1.0.0 (2026-09-26)
 
-## In progress (operator)
-- [ ] Vercel frontend deploy (`frontend/`, env vars)
-- [ ] DNS CNAME: `api.fixna.in` → Render, `app.fixna.in` → Vercel
-- [ ] Render `FIXNA_CORS_ALLOWED_ORIGINS` includes frontend URL
-- [ ] End-to-end smoke test on custom domains
+- [x] MVP backend + frontend
+- [x] Shared demo live: https://app.fixna.in · https://api.fixna.in
+- [x] Neon SQL seeds, staging hardening, unified brand mark
+- [x] Version bumped to 1.0.0 (backend + frontend + manifest)
 
-## Next (engineering backlog)
-- [ ] CI: Docker image build for backend
-- [ ] CI: test coverage reporting
-- [ ] CI: container image security scan
-- [ ] Wire Vitest for frontend unit tests
-- [ ] Generate `docs/03-api/openapi.yaml` from springdoc
+## Next (1.1.0+ backlog)
+
+- [ ] E2E smoke on production URLs (login → dashboard → campaigns)
+- [ ] CI: Docker image build, coverage, security scan
+- [ ] Vitest/Playwright frontend tests
+- [ ] OpenAPI generation from springdoc
+- [ ] Next.js `themeColor` → `viewport` export

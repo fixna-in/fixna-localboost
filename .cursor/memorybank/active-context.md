@@ -1,66 +1,71 @@
 # Active Context — Fixna LocalBoost
 
-**Last updated:** 2026-09-26
+**Last updated:** 2026-09-26  
+**Release:** **1.0.0** — first major release
 
 ## Current focus
 
-Shared demo on **fixna.in** is **live**: API + frontend + DNS CNAMEs active.
-App: https://app.fixna.in/dashboard | API: https://api.fixna.in
+**v1.0.0 shipped.** Shared demo on **fixna.in** is fully live (API, frontend, DNS).
+Post-release: production smoke tests and CI hardening for 1.1.0.
 
-## Live stack (demo)
+| App | URL |
+|-----|-----|
+| Dashboard | https://app.fixna.in/dashboard |
+| Campaigns | https://app.fixna.in/campaigns |
+| API health | https://api.fixna.in/actuator/health |
+
+## Live stack
 
 | Layer | Provider | Notes |
 |-------|----------|-------|
-| Database | Neon PostgreSQL (`fixna`) | Flyway on API startup; manual SQL seed |
-| API | Render (Docker, free tier, Singapore) | `SPRING_PROFILES_ACTIVE=staging` baked in Dockerfile |
-| Frontend | Vercel | Root dir `frontend`, Next.js 15 |
+| Database | Neon PostgreSQL (`fixna`) | Manual SQL seed only |
+| API | Render (`fixna-localboost`) | `staging` profile in Dockerfile |
+| Frontend | Vercel (`frontend/`) | Next.js 15 |
 
-## URLs
+## Brand mark (unified)
 
-| Purpose | URL |
-|---------|-----|
-| API (Render default) | `https://fixna-localboost.onrender.com` |
-| API health | `https://fixna-localboost.onrender.com/actuator/health` |
-| API (target custom) | `https://api.fixna.in` |
-| App (target custom) | `https://app.fixna.in` |
+Canonical **`f•`** on `#163e32` with lime dot `#c7ed94`:
 
-## Demo data (Neon — manual, not on app startup)
+| Location | File / component |
+|----------|------------------|
+| Favicon | `frontend/src/app/icon.svg` |
+| Apple touch | `frontend/src/app/apple-icon.svg` |
+| Header / sidebar | `BrandMarkIcon` in `components/ui.tsx` |
+| Login/register hero | `BrandMarkIcon` in `components/auth-layout.tsx` |
+| Source of truth | `frontend/src/brand/brand-mark-graphic.tsx` |
 
-1. `tools/sql/neon-demo-seed.sql` — user `owner@example.com`, tenant, business, subscription
-2. `tools/sql/neon-demo-data.sql` — location, campaigns, leads, metrics (idempotent)
+## Backend note — RequestIdFilter
 
-Password hash: `tools\password-tool.cmd hash` → `UPDATE users SET password_hash = ...`
+- Injects `Optional<Tracer>` (Spring supplies empty when no tracer bean).
+- Explicit `micrometer-tracing` in `pom.xml` (IDE classpath).
+- Copies `traceId`/`spanId` into MDC when span active.
 
-## Staging profile highlights
+## Demo data (Neon — manual)
 
-- `fixna.test-data.enabled: false` — no LocalTestDataSeeder on Render
-- Redis autoconfig excluded; `management.health.redis.enabled: false`
-- `UserDetailsServiceAutoConfiguration` excluded — no generated Spring security password
+1. `tools/sql/neon-demo-seed.sql` — `owner@example.com`, tenant, business
+2. `tools/sql/neon-demo-data.sql` — campaigns, leads, metrics
+
+Password: `tools\password-tool.cmd hash` → SQL `UPDATE users SET password_hash = ...`
+
+## Staging profile
+
+- No auto seed, Redis off, no Spring default password
 - Mock AI + mock platform adapters
 
-## Key env vars (Render)
+## Key env vars
 
-- `SPRING_PROFILES_ACTIVE=staging` (Dockerfile default + dashboard)
-- `SPRING_DATASOURCE_URL`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
-- `FIXNA_JWT_SECRET` (48+ chars)
-- `FIXNA_CORS_ALLOWED_ORIGINS` — must include exact frontend origin(s)
+**Render:** `SPRING_PROFILES_ACTIVE`, `SPRING_DATASOURCE_URL`, `POSTGRES_*`,
+`FIXNA_JWT_SECRET`, `FIXNA_CORS_ALLOWED_ORIGINS` (must include `https://app.fixna.in`)
 
-## Key env vars (Vercel)
+**Vercel:** `NEXT_PUBLIC_API_BASE_URL=https://api.fixna.in/api`, `NEXT_PUBLIC_APP_ENV=demo`
 
-- `NEXT_PUBLIC_API_BASE_URL` — must end with `/api` (e.g. `https://api.fixna.in/api`)
-- `NEXT_PUBLIC_APP_ENV=demo`
+## Agent handoff
 
-## Repo cleanup (2026-09-26)
-
-Removed abandoned Fly.io artifacts (`fly.toml`, deploy workflow, fly secrets template),
-unused `frontend/Dockerfile`, stub `docs/08-operations.md`, unused `nginx.conf`.
-
-Canonical deploy docs: `docs/07-operations/deployment.md`
+Full no-secrets brief: `.cursor/memorybank/chatgpt-handoff.md`
 
 ## Next recommended work
 
-- [ ] Vercel frontend deploy + `NEXT_PUBLIC_API_BASE_URL`
-- [ ] DNS CNAME: `api` → Render, `app` → Vercel
-- [ ] Update Render CORS after frontend URL known
-- [ ] CI: Docker image build, coverage, security scan (backlog)
-- [ ] Wire Vitest/Playwright for frontend tests
+- [ ] E2E smoke on production URLs
+- [ ] CI: Docker build, coverage, security scan
+- [ ] Vitest/Playwright frontend tests
+- [ ] OpenAPI generation from springdoc

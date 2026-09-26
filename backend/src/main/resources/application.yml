@@ -33,6 +33,13 @@ management:
     web:
       exposure:
         include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  info:
+    build:
+      enabled: true
   health:
     redis:
       enabled: false
@@ -58,6 +65,8 @@ logging:
 
 fixna:
   app-env: ${FIXNA_APP_ENV:local}
+  # Optional ISO-8601 deploy timestamp; defaults to Maven build-info time when unset.
+  deployed-at: ${FIXNA_DEPLOYED_AT:}
   security:
     jwt:
       secret: ${FIXNA_JWT_SECRET:dev-only-secret-change-me-in-production-32bytes-minimum!!}

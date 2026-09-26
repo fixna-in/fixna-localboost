@@ -1,6 +1,7 @@
 # Deployment State — Shared Demo
 
-**Last updated:** 2026-09-26
+**Last updated:** 2026-09-26  
+**Release:** 1.0.0
 
 ## Status
 
@@ -56,4 +57,6 @@
 - `infrastructure/demo/render.env.example` — Render env template
 - `infrastructure/demo/vercel.env.example` — Vercel env template
 - `frontend/vercel.json` — Vercel build settings
+- `frontend/src/brand/brand-mark-graphic.tsx` — canonical logo/favicon artwork
 - `docs/07-operations/deployment.md` — full guide
+- `.cursor/memorybank/chatgpt-handoff.md` — no-secrets external handoff

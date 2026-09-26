@@ -2,6 +2,7 @@
 
 **Purpose:** Paste into ChatGPT or another assistant for full project context.  
 **Last updated:** 2026-09-26  
+**Version:** 1.0.0  
 **Domain:** fixna.in  
 **Product:** Fixna LocalBoost (local business marketing orchestration SaaS)
 
@@ -34,7 +35,14 @@ Meta Ads, or WhatsApp. The shared demo uses **mock** AI and **mock** platform ad
 
 ---
 
-## 3. Shared demo deployment (LIVE)
+## 3. Release 1.0.0 (2026-09-26)
+
+First major release: full MVP + shared demo deployment. Backend `pom.xml` and
+frontend `package.json` version **1.0.0**. See root `CHANGELOG.md`.
+
+---
+
+## 4. Shared demo deployment (LIVE)
 
 | Layer | Provider | Status |
 |-------|----------|--------|
@@ -61,7 +69,21 @@ Meta Ads, or WhatsApp. The shared demo uses **mock** AI and **mock** platform ad
 
 ---
 
-## 4. Spring profiles
+## 4b. Brand mark (unified)
+
+| Location | Implementation |
+|----------|----------------|
+| Favicon | `frontend/src/app/icon.svg` |
+| Apple touch icon | `frontend/src/app/apple-icon.svg` |
+| Header / sidebar | `BrandMarkIcon` → `components/ui.tsx` |
+| Login/register hero | `BrandMarkIcon` → `components/auth-layout.tsx` |
+| **Source of truth** | `frontend/src/brand/brand-mark-graphic.tsx` |
+
+Design: white **f** + lime **•** (`#c7ed94`) on dark green `#163e32` rounded square.
+
+---
+
+## 5. Spring profiles
 
 | Profile | Use |
 |---------|-----|
@@ -76,7 +98,7 @@ mock AI and mock platform adapters.
 
 ---
 
-## 5. Environment variables (names only — no real values)
+## 6. Environment variables (names only — no real values)
 
 ### Render (API)
 
@@ -95,7 +117,7 @@ Template: `infrastructure/demo/vercel.env.example`
 
 ---
 
-## 6. Demo data (manual in Neon)
+## 7. Demo data (manual in Neon)
 
 App does **not** seed demo data on startup on staging.
 
@@ -110,7 +132,7 @@ Demo login email: `owner@example.com` (password set by operator via BCrypt hash 
 
 ---
 
-## 7. Database — ERD (relationships)
+## 8. Database — ERD (relationships)
 
 PostgreSQL schema from Flyway V1–V9. All tenant-owned tables include `tenant_id`.
 
@@ -161,7 +183,7 @@ Full diagrams: `docs/02-architecture/diagrams/database-erd.md`
 
 ---
 
-## 8. Database — table structure (22 tables)
+## 9. Database — table structure (22 tables)
 
 ### V1 — Auth & tenancy
 
@@ -240,7 +262,7 @@ Adds indexes on audit_logs, ai_usage_log, subscriptions, businesses, campaigns.
 
 ---
 
-## 9. Project directory structure
+## 10. Project directory structure
 
 ```
 fixna-localboost/
@@ -294,6 +316,7 @@ fixna-localboost/
 ├── frontend/                      # Next.js (Vercel root directory)
 │   ├── vercel.json
 │   ├── package.json
+│   ├── src/brand/                 # brand-mark-graphic.tsx (canonical f• mark)
 │   └── src/
 │       ├── app/
 │       │   ├── dashboard/         # Analytics overview
@@ -328,7 +351,7 @@ fixna-localboost/
 
 ---
 
-## 10. Implemented features (MVP)
+## 11. Implemented features (MVP)
 
 ### Backend modules
 Auth, tenant + RBAC, business + locations, campaigns (CRUD, lifecycle, offers,
@@ -345,7 +368,7 @@ DRAFT → READY_FOR_REVIEW → APPROVED → QUEUED → CREATING → ACTIVE → P
 
 ---
 
-## 11. CI/CD
+## 12. CI/CD
 
 | Trigger | Action |
 |---------|--------|
@@ -357,7 +380,16 @@ DRAFT → READY_FOR_REVIEW → APPROVED → QUEUED → CREATING → ACTIVE → P
 
 ---
 
-## 12. Security non-negotiables
+## 13. Observability — RequestIdFilter
+
+- Sets/propagates `X-Request-Id`; stores in MDC and response header.
+- When a Micrometer `Tracer` bean exists, copies `traceId`/`spanId` into MDC.
+- Constructor: `RequestIdFilter(Optional<Tracer> tracer)` — empty when tracing off.
+- Dependencies: `micrometer-tracing` + `micrometer-tracing-bridge-otel` in `pom.xml`.
+
+---
+
+## 14. Security non-negotiables
 
 - Never trust client-supplied `tenantId`
 - No secrets or tokens in logs
@@ -367,19 +399,21 @@ DRAFT → READY_FOR_REVIEW → APPROVED → QUEUED → CREATING → ACTIVE → P
 
 ---
 
-## 13. Current status checklist
+## 15. Current status checklist
 
 - [x] Neon database + Flyway migrations
 - [x] Render API live (staging profile)
 - [x] Vercel frontend live at app.fixna.in
 - [x] DNS CNAME active (api + app)
 - [x] Demo user + campaign data via Neon SQL
-- [ ] Confirm login/session end-to-end on app.fixna.in (if "Restoring session" persists, check CORS + API URL + JWT)
-- [ ] End-to-end smoke: login → dashboard metrics → campaigns list
+- [x] Unified brand mark (favicon + header + auth hero)
+- [x] `RequestIdFilter` Optional&lt;Tracer&gt; + explicit micrometer-tracing dep
+- [x] **Version 1.0.0** released (backend + frontend + manifest)
+- [ ] End-to-end smoke: login → dashboard metrics → campaigns on production URLs
 
 ---
 
-## 14. Canonical documentation
+## 16. Canonical documentation
 
 - Deployment: `docs/07-operations/deployment.md`
 - Database ERD: `docs/02-architecture/diagrams/database-erd.md`
@@ -388,7 +422,7 @@ DRAFT → READY_FOR_REVIEW → APPROVED → QUEUED → CREATING → ACTIVE → P
 
 ---
 
-## 15. Do NOT share externally
+## 17. Do NOT share externally
 
 Neon credentials, JWT secrets, database passwords, API keys, demo user plaintext
 password, or Render/Vercel account tokens.
