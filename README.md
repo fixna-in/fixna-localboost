@@ -105,7 +105,7 @@ Example (trimmed):
 More: [docs/07-operations/observability.md](docs/07-operations/observability.md).
 
 ## Architecture
-- Frontend: Next.js 15 + React + TypeScript ([app.fixna.in](https://app.fixna.in))
+- Frontend: Next.js 16 + React + TypeScript ([app.fixna.in](https://app.fixna.in))
 - Backend: Java 21 + Spring Boot 3.5 ([api.fixna.in](https://api.fixna.in))
 - Database: PostgreSQL + Flyway (V1–V9)
 - Cache: Redis (local/dev; disabled on staging demo)

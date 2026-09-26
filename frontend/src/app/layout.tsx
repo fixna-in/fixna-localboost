@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 import "./product.css";
@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   description:
     "AI-assisted local advertising orchestration for SMBs — plan, launch and measure hyperlocal campaigns.",
   applicationName: "Fixna LocalBoost",
+};
+
+export const viewport: Viewport = {
   themeColor: "#163e32",
 };
 
