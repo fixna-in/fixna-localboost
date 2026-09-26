@@ -1,6 +1,8 @@
 package in.fixna.platform.common.observability;
 
+
 import java.time.Instant;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -37,6 +39,7 @@ class PlatformHealthServiceTest {
         props.setProperty("group", "in.fixna");
         props.setProperty("name", "fixna-api");
         BuildProperties build = new BuildProperties(props);
+
         PlatformHealthService service = new PlatformHealthService(
                 endpoint,
                 Optional.of(build),
@@ -44,11 +47,13 @@ class PlatformHealthServiceTest {
                 "fixna-localboost-backend",
                 "");
 
+
         PlatformHealthResponse response = service.snapshot();
 
         assertThat(response.status()).isEqualTo("UP");
         assertThat(response.version()).isEqualTo("1.0.0");
         assertThat(response.environment()).isEqualTo("demo");
+
         assertThat(response.deployedAt()).isEqualTo(Instant.parse("2026-09-26T12:00:00Z").toString());
         assertThat(response.components()).containsKeys("db", "platform");
         assertThat(response.components().get("db").status()).isEqualTo("UP");
@@ -64,12 +69,11 @@ class PlatformHealthServiceTest {
         when(endpoint.health()).thenReturn(root);
 
         PlatformHealthService service = new PlatformHealthService(
-                endpoint,
-                Optional.empty(),
-                "staging",
-                "fixna-api",
-                "2026-09-26T18:30:00Z");
+
+
+        assertThat(service.snapshot().deployedAt()).isEqualTo("2026-09-26T18:00:00Z");
 
         assertThat(service.snapshot().deployedAt()).isEqualTo("2026-09-26T18:30:00Z");
+
     }
 }
