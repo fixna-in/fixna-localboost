@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: "Fixna LocalBoost",
   description:
     "AI-assisted local advertising orchestration for SMBs — plan, launch and measure hyperlocal campaigns.",
+  applicationName: "Fixna LocalBoost",
+  themeColor: "#163e32",
 };
 
 export default function RootLayout({

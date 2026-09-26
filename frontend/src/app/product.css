@@ -12,8 +12,7 @@ h1 { font-size: clamp(1.8rem, 3vw, 2.3rem); letter-spacing: -0.045em; font-weigh
 h2 { font-size: 1.15rem; letter-spacing: -0.025em; }
 .brand { display: inline-flex; gap: 0.65rem; align-items: center; color: var(--text); font-weight: 750; font-size: 1.7rem; line-height: 1; letter-spacing: -0.06em; text-decoration: none; }
 .brand:hover { text-decoration: none; }
-.brand-mark { display: inline-flex; justify-content: center; align-items: center; background: #163e32; color: #fff; border-radius: 12px; width: 42px; height: 44px; font-size: 2rem; }
-.brand-mark span, .orbit-core span { color: #c7ed94; }
+.brand-mark { flex-shrink: 0; display: block; }
 .brand-product { display: block; color: var(--muted); font-size: 0.61rem; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.3rem; }
 .public-header { height: 90px; padding: 0 5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: #fff; }
 .public-header nav { display: flex; align-items: center; gap: 1.8rem; }
@@ -30,7 +29,7 @@ h2 { font-size: 1.15rem; letter-spacing: -0.025em; }
 .orbit-ring { position: absolute; border: 1px solid #557662; border-radius: 50%; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .ring-one { width: 155px; height: 155px; }
 .ring-two { width: 245px; height: 245px; border-style: dashed; opacity: 0.55; }
-.orbit-core { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #254e3c; border: 1px solid #728e65; border-radius: 20px; width: 70px; height: 70px; text-align: center; font-size: 2.7rem; font-weight: 700; }
+.orbit-core { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: block; filter: drop-shadow(0 12px 28px rgba(16, 46, 36, 0.35)); }
 .orbit-label { position: absolute; background: #f8fbf5; color: #274a38; font-size: 0.72rem; padding: 0.65rem 0.85rem; border-radius: 9px; box-shadow: 0 8px 20px #102e2440; }
 .orbit-label-one { left: 0; top: 20%; }
 .orbit-label-two { right: 0; bottom: 15%; }

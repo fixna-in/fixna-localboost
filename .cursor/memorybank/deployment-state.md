@@ -11,9 +11,9 @@
 | Render API | ✅ Live — health `UP` |
 | Demo user seed | ✅ Operator-loaded via SQL |
 | Demo campaign data | ✅ `neon-demo-data.sql` (operator) |
-| Custom domain `api.fixna.in` | ⏳ DNS CNAME pending |
-| Vercel frontend | ⏳ Connect repo + env vars |
-| Custom domain `app.fixna.in` | ⏳ DNS CNAME pending |
+| Custom domain `api.fixna.in` | ✅ CNAME active |
+| Vercel frontend | ✅ Live at https://app.fixna.in |
+| Custom domain `app.fixna.in` | ✅ CNAME active |
 
 ## Render service
 
