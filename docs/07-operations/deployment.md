@@ -89,7 +89,7 @@ Generate JWT (PowerShell):
 7. After deploy, logs must show **`The following 1 profile is active: "staging"`** — not `No active profile set`.
    - `backend/Dockerfile` sets `SPRING_PROFILES_ACTIVE=staging` by default.
    - If you created the service **without** Blueprint, also add `SPRING_PROFILES_ACTIVE=staging` in Render → **Environment** (Blueprint env from `render.yaml` is not applied retroactively).
-8. Test: `https://fixna-localboost-api.onrender.com/actuator/health` → `{"status":"UP"}`
+8. Test: `https://fixna-localboost-api.onrender.com/api/v1/health` → `status: UP` with component map, `version`, and `deployedAt`. Optional: set `FIXNA_DEPLOYED_AT` (ISO-8601 UTC) in Render env for an explicit last-deploy timestamp.
 
 ### 2.1b Demo user (manual SQL in Neon — not on app startup)
 
@@ -144,7 +144,7 @@ Optional: redirect `fixna.in` → `app.fixna.in` in Vercel or Cloudflare.
 
 ## Step 4 — Smoke test
 
-1. `https://api.fixna.in/actuator/health`
+1. `https://api.fixna.in/api/v1/health` — overall `UP`, components (`db`, `flyway`, `platform`, …), `version`, `deployedAt`
 2. `https://app.fixna.in/register`
 3. Register → business → campaign → AI recommendation (mock)
 

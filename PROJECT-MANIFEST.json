@@ -1,6 +1,7 @@
 {
   "project": "Fixna LocalBoost",
+  "version": "1.0.0",
   "domain": "fixna.in",
-  "generated": true,
-  "note": "AI-development-ready scaffold; business implementation remains to be generated phase-by-phase by Cursor agents."
+  "releaseDate": "2026-09-26",
+  "note": "First major release — shared demo live at app.fixna.in with full MVP backend and frontend."
 }

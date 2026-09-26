@@ -110,10 +110,31 @@ root at `WARN`-quiet third parties. Overrides use Spring Boot's standard
 
 | Probe                    | Endpoint                      | Semantics                                  |
 |--------------------------|-------------------------------|--------------------------------------------|
-| Liveness                 | `GET /api/v1/health`          | 200 `UP` — process is serving             |
+| Aggregated health        | `GET /api/v1/health`          | 200 when overall status is `UP`; 503 otherwise. Returns accumulated status, per-component probes, `version`, `deployedAt`, `environment`, `service`, and `timestamp`. |
 | Readiness                | `GET /api/v1/health/readiness`| 200 `READY` only after `ApplicationReadyEvent`; 503 `DOWN` before |
-| Component health         | `GET /actuator/health`        | DB/Redis/disk checks                       |
+| Actuator health          | `GET /actuator/health`        | Same component contributors as the public API (`db`, `diskSpace`, `ping`, `flyway`, `platform`, …) with details enabled |
 | OpenAPI                  | `GET /v3/api-docs`            | API surface                                |
+
+`GET /api/v1/health` example (trimmed):
+
+```json
+{
+  "status": "UP",
+  "version": "1.0.0",
+  "deployedAt": "2026-09-26T12:00:00Z",
+  "environment": "demo",
+  "service": "fixna-localboost-backend",
+  "timestamp": "2026-09-26T18:30:00+05:30",
+  "components": {
+    "db": { "status": "UP", "details": { "database": "PostgreSQL" } },
+    "flyway": { "status": "UP", "details": { "applied": 9, "pending": 0, "currentVersion": "9" } },
+    "platform": { "status": "UP", "details": { "version": "1.0.0", "environment": "demo", "deployedAt": "..." } }
+  }
+}
+```
+
+- **version** — Maven `build-info` (`spring-boot-maven-plugin` `build-info` goal).
+- **deployedAt** — `FIXNA_DEPLOYED_AT` env var when set; otherwise build-info timestamp.
 
 `AppReadiness` flips the readiness gate only after the Spring context is fully
 initialized, so load balancers never route traffic into a half-started app.
