@@ -1,8 +1,14 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { BrandMarkIcon } from "@/brand/brand-mark-icon";
 
 export function Brand() {
-  return <Link className="brand" href="/" aria-label="Fixna LocalBoost home"><span className="brand-mark" aria-hidden="true">f<span>•</span></span><span>fixna<span className="brand-product">LocalBoost</span></span></Link>;
+  return (
+    <Link className="brand" href="/" aria-label="Fixna LocalBoost home">
+      <BrandMarkIcon className="brand-mark" />
+      <span>fixna<span className="brand-product">LocalBoost</span></span>
+    </Link>
+  );
 }
 
 export function PageHeader({ eyebrow = "YOUR WORKSPACE", title, description, action }: {

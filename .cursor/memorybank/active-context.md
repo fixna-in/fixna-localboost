@@ -4,8 +4,8 @@
 
 ## Current focus
 
-Shared demo deployment on **fixna.in** is **live** (API healthy). Frontend on Vercel
-and custom DNS (`api.fixna.in`, `app.fixna.in`) are the remaining operator steps.
+Shared demo on **fixna.in** is **live**: API + frontend + DNS CNAMEs active.
+App: https://app.fixna.in/dashboard | API: https://api.fixna.in
 
 ## Live stack (demo)
 
