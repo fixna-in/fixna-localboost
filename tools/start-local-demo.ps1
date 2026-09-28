@@ -70,6 +70,11 @@ try {
     $env:FIXNA_PLATFORM_MODE = 'mock'
     $env:FIXNA_CORS_ALLOWED_ORIGINS = "http://localhost:$FrontendPort,http://127.0.0.1:$FrontendPort"
     $env:NEXT_PUBLIC_API_BASE_URL = "http://localhost:$BackendPort/api"
+    Write-Host 'Compiling backend (clean) to avoid stale class files...'
+    $compile = Start-Process -FilePath 'mvn.cmd' -ArgumentList @(
+        '-f', (Join-Path $root 'backend/pom.xml'), 'clean', 'compile', '-q'
+    ) -WorkingDirectory $root -Wait -PassThru -NoNewWindow
+    if ($compile.ExitCode -ne 0) { throw "Backend compile failed (exit $($compile.ExitCode)). Run mvn -f backend/pom.xml clean compile for details." }
     Write-Host "Starting backend against persistent localboost database. Logs: $logs"
     $backend = Start-Tracked 'backend' $root "mvn.cmd -f backend/pom.xml spring-boot:run -Dspring-boot.run.profiles=local -Dspring-boot.run.arguments=--server.port=$BackendPort"
     # Do not forward the database password to npm or the frontend.
