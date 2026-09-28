@@ -1,6 +1,6 @@
 # Project Context — Fixna LocalBoost
 
-**Version:** 1.0.0 (2026-09-26)
+**Version:** 1.0.1 (2026-09-28)
 
 ## Product
 
@@ -13,7 +13,8 @@ Initial market: India (Noida / Greater Noida / Delhi NCR).
 ## Architecture
 
 - Modular monolith (Java 21, Spring Boot 3.x, PostgreSQL, Redis optional)
-- Frontend: Next.js 15, React 19, TypeScript
+- Frontend: Next.js 16, React 19, TypeScript
+- Source: GitHub org **fixna-in/fixna-localboost**
 - Multi-tenancy: shared DB, `tenant_id` on tenant-owned rows; JWT + RBAC
 - AI: `AIProvider` abstraction; mock provider in demo; output schema-validated
 - Platforms: adapter pattern; mock Google/Meta/WhatsApp in demo
@@ -41,8 +42,9 @@ Implementation: `frontend/src/brand/brand-mark-graphic.tsx` (favicon, header, au
 
 ## Observability
 
-`RequestIdFilter` — `X-Request-Id` + optional OTel `traceId`/`spanId` in MDC via
-`Optional<Tracer>` injection.
+- `RequestIdFilter` — `X-Request-Id` + optional OTel `traceId`/`spanId` in MDC
+- `GET /api/v1/health` — aggregated status, components, version, `deployedAt`
+- Actuator `/actuator/health` — built-in probes including `flyway` (no custom flyway bean)
 
 ## Agent entry points
 

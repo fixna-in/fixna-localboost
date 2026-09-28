@@ -1,44 +1,41 @@
 # Active Context — Fixna LocalBoost
 
-**Last updated:** 2026-09-26  
-**Release:** **1.0.0** — first major release
+**Last updated:** 2026-09-28  
+**Release:** **1.0.1** — shared demo fully operational
 
 ## Current focus
 
-**v1.0.0 shipped.** Shared demo on **fixna.in** is fully live (API, frontend, DNS).
-Post-release: production smoke tests and CI hardening for 1.1.0.
+**v1.0.1 shipped.** Demo on **fixna.in** is live end-to-end: Neon + Render API +
+Vercel frontend, DNS, health API, GitHub org **fixna-in**, CI green.
 
 | App | URL |
 |-----|-----|
 | Dashboard | https://app.fixna.in/dashboard |
 | Campaigns | https://app.fixna.in/campaigns |
-| API health | https://api.fixna.in/actuator/health |
+| API health | https://api.fixna.in/api/v1/health |
+| Actuator | https://api.fixna.in/actuator/health |
 
 ## Live stack
 
 | Layer | Provider | Notes |
 |-------|----------|-------|
+| Source | GitHub **fixna-in/fixna-localboost** | Org repo; Render + Vercel connected |
 | Database | Neon PostgreSQL (`fixna`) | Manual SQL seed only |
-| API | Render (`fixna-localboost`) | `staging` profile in Dockerfile |
-| Frontend | Vercel (`frontend/`) | Next.js 15 |
+| API | Render (`fixna-localboost-api`) | `staging` profile, Docker |
+| Frontend | Vercel (`frontend/`) | Next.js **16.3.6** |
+
+## Recent fixes (1.0.1)
+
+- Enhanced `/api/v1/health` (components + version + `deployedAt`)
+- Removed `FlywayHealthIndicator` bean conflict (Render startup)
+- Next.js 16.3.6; CI dependency-review on PRs only
+- Local launcher: `mvn clean compile` before backend start
+- Flyway 11.20 for PostgreSQL 18
 
 ## Brand mark (unified)
 
-Canonical **`f•`** on `#163e32` with lime dot `#c7ed94`:
-
-| Location | File / component |
-|----------|------------------|
-| Favicon | `frontend/src/app/icon.svg` |
-| Apple touch | `frontend/src/app/apple-icon.svg` |
-| Header / sidebar | `BrandMarkIcon` in `components/ui.tsx` |
-| Login/register hero | `BrandMarkIcon` in `components/auth-layout.tsx` |
-| Source of truth | `frontend/src/brand/brand-mark-graphic.tsx` |
-
-## Backend note — RequestIdFilter
-
-- Injects `Optional<Tracer>` (Spring supplies empty when no tracer bean).
-- Explicit `micrometer-tracing` in `pom.xml` (IDE classpath).
-- Copies `traceId`/`spanId` into MDC when span active.
+Canonical **`f•`** on `#163e32` with lime dot `#c7ed94` — see
+`frontend/src/brand/brand-mark-graphic.tsx`.
 
 ## Demo data (Neon — manual)
 
@@ -47,15 +44,10 @@ Canonical **`f•`** on `#163e32` with lime dot `#c7ed94`:
 
 Password: `tools\password-tool.cmd hash` → SQL `UPDATE users SET password_hash = ...`
 
-## Staging profile
-
-- No auto seed, Redis off, no Spring default password
-- Mock AI + mock platform adapters
-
 ## Key env vars
 
 **Render:** `SPRING_PROFILES_ACTIVE`, `SPRING_DATASOURCE_URL`, `POSTGRES_*`,
-`FIXNA_JWT_SECRET`, `FIXNA_CORS_ALLOWED_ORIGINS` (must include `https://app.fixna.in`)
+`FIXNA_JWT_SECRET`, `FIXNA_CORS_ALLOWED_ORIGINS`, optional `FIXNA_DEPLOYED_AT`
 
 **Vercel:** `NEXT_PUBLIC_API_BASE_URL=https://api.fixna.in/api`, `NEXT_PUBLIC_APP_ENV=demo`
 
@@ -65,7 +57,7 @@ Full no-secrets brief: `.cursor/memorybank/chatgpt-handoff.md`
 
 ## Next recommended work
 
-- [ ] E2E smoke on production URLs
-- [ ] CI: Docker build, coverage, security scan
+- [ ] E2E smoke on production URLs (login → dashboard → campaigns)
 - [ ] Vitest/Playwright frontend tests
 - [ ] OpenAPI generation from springdoc
+- [ ] Optional: Vercel Pro or CLI deploy if org repo stays private on Hobby

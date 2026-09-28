@@ -4,6 +4,38 @@
 
 _No changes yet._
 
+## 1.0.1 — 2026-09-28
+
+**Post-release maintenance** — shared demo fully operational on [fixna.in](https://fixna.in)
+under GitHub org [fixna-in](https://github.com/fixna-in).
+
+### Health & observability
+
+- Aggregated `GET /api/v1/health` — overall status, per-component probes (`db`,
+  `flyway`, `platform`, …), `version`, `deployedAt`, `environment`, `service`.
+- `PlatformHealthService` + `PlatformHealthIndicator`; Maven `build-info` for version.
+- Optional `FIXNA_DEPLOYED_AT` on Render; actuator health shows component details.
+- Removed custom `FlywayHealthIndicator` (bean name `flyway` conflicted with Spring
+  Boot Flyway auto-config — use built-in actuator `flyway` probe).
+
+### Frontend & CI
+
+- Next.js **16.3.6** (from 15.5.x); `themeColor` moved to `viewport` export.
+- `dependency-review` job merged into `.github/workflows/ci.yml` (PR-only);
+  removed broken `security-scan.yml` `on: push` trigger.
+
+### Local development
+
+- `start-local-demo.ps1` runs `mvn clean compile` before `spring-boot:run` (avoids
+  stale bytecode / `Lookup method resolution failed` on `CampaignLaunchService`).
+- Flyway **11.20.0** for PostgreSQL 18 local dev; `CampaignLaunchAttempt` extracted.
+- `ApplicationContextLoadTest` — full Spring context smoke (Testcontainers).
+
+### Deployment & org
+
+- GitHub repository under **fixna-in**; Render API and Vercel frontend reconnected.
+- Live: https://app.fixna.in · https://api.fixna.in/api/v1/health
+
 ## 1.0.0 — 2026-09-26
 
 **First major release** of Fixna LocalBoost: production-oriented multi-tenant MVP
