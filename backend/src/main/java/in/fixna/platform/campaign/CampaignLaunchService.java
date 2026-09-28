@@ -103,7 +103,7 @@ public class CampaignLaunchService {
                         campaign.getStartAt(),
                         campaign.getEndAt(),
                         null);
-                Attempt attempt = attempt(adapter, request);
+                CampaignLaunchAttempt attempt = attempt(adapter, request);
                 if (attempt.failure() == null) {
                     receipts.add(attempt.receipt());
                 } else {
@@ -143,16 +143,13 @@ public class CampaignLaunchService {
         return CampaignResponse.from(fresh);
     }
 
-    /** Outcome of one channel's launch attempt: exactly one side is non-null. */
-    private record Attempt(LaunchReceipt receipt, PlatformException failure) {}
-
     /**
      * Bounded retries for retryable failures only; returns the last outcome.
      * Each attempt emits one {@code platform.launch} telemetry line (WF11):
      * adapter, campaign, durationMs and per-attempt status. Never logs the
      * request payload or any token.
      */
-    private Attempt attempt(AdvertisingPlatformAdapter adapter, PlatformLaunchRequest request) {
+    private CampaignLaunchAttempt attempt(AdvertisingPlatformAdapter adapter, PlatformLaunchRequest request) {
         PlatformException last = null;
         for (int i = 1; i <= MAX_ATTEMPTS; i++) {
             long attemptStartedAt = System.nanoTime();
@@ -166,7 +163,7 @@ public class CampaignLaunchService {
                                 + " externalCampaignId={} durationMs={}",
                         adapter.platform(), LoggingConstants.PLATFORM_CREATE_CAMPAIGN,
                         request.campaignId(), receipt.externalCampaignId(), durationMs);
-                return new Attempt(receipt, null);
+                return new CampaignLaunchAttempt(receipt, null);
             } catch (PlatformException ex) {
                 timer.status("FAILED");
                 last = ex;
@@ -176,13 +173,13 @@ public class CampaignLaunchService {
                         ex.getPlatform(), LoggingConstants.PLATFORM_CREATE_CAMPAIGN,
                         request.campaignId(), ex.getCode(), ex.isRetryable(), durationMs);
                 if (!ex.isRetryable()) {
-                    return new Attempt(null, last);
+                    return new CampaignLaunchAttempt(null, last);
                 }
             } finally {
                 timer.close();
             }
         }
-        return new Attempt(null, last);
+        return new CampaignLaunchAttempt(null, last);
     }
 
     private String resolveCode(PlatformException failure) {
