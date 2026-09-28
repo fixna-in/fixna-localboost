@@ -4,6 +4,7 @@
 
 ## One-command local demo (Windows)
 
+
 Run `C:\Users\Dell\workspace\fixna-localboost\tools\start-local-demo.cmd`
 from CMD or PowerShell. Requires Java 21, Maven, Node.js and npm on PATH;
 first startup needs network access for dependencies. No Docker is needed.
