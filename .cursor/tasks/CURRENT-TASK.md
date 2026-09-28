@@ -1,20 +1,25 @@
 # Current Task
 
-Task: Post-1.0.0 maintenance
+Task: Post-1.0.1 maintenance
 Phase: production / demo
-Status: COMPLETE (1.0.0 released 2026-09-26)
+Status: COMPLETE (1.0.1 — 2026-09-28)
 
-## Release 1.0.0 (2026-09-26)
+## Release 1.0.1 (2026-09-28)
 
-- [x] MVP backend + frontend
-- [x] Shared demo live: https://app.fixna.in · https://api.fixna.in
-- [x] Neon SQL seeds, staging hardening, unified brand mark
-- [x] Version bumped to 1.0.0 (backend + frontend + manifest)
+- [x] Aggregated `/api/v1/health` (components, version, deployedAt)
+- [x] Fix Render startup (`FlywayHealthIndicator` bean conflict removed)
+- [x] Next.js 16.3.6; CI dependency-review on PRs only
+- [x] GitHub org **fixna-in** — Render + Vercel reconnected and deploying
+- [x] Local launcher `mvn clean compile`; Flyway 11.20 for PostgreSQL 18
+- [x] Changelog + memorybank updated
+
+## Live URLs
+
+- https://app.fixna.in
+- https://api.fixna.in/api/v1/health
 
 ## Next (1.1.0+ backlog)
 
 - [ ] E2E smoke on production URLs (login → dashboard → campaigns)
-- [ ] CI: Docker image build, coverage, security scan
 - [ ] Vitest/Playwright frontend tests
 - [ ] OpenAPI generation from springdoc
-- [ ] Next.js `themeColor` → `viewport` export

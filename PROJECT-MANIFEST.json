@@ -1,7 +1,9 @@
 {
   "project": "Fixna LocalBoost",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "domain": "fixna.in",
-  "releaseDate": "2026-09-26",
-  "note": "First major release — shared demo live at app.fixna.in with full MVP backend and frontend."
+  "releaseDate": "2026-09-28",
+  "githubOrg": "fixna-in",
+  "repository": "fixna-in/fixna-localboost",
+  "note": "Shared demo fully operational — app.fixna.in, api.fixna.in, fixna-in GitHub org, health API, Next.js 16."
 }

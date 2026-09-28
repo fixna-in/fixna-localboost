@@ -1,8 +1,8 @@
 # Fixna LocalBoost — Project State Handoff (no secrets)
 
 **Purpose:** Paste into ChatGPT or another assistant for full project context.  
-**Last updated:** 2026-09-26  
-**Version:** 1.0.0  
+**Last updated:** 2026-09-28  
+**Version:** 1.0.1  
 **Domain:** fixna.in  
 **Product:** Fixna LocalBoost (local business marketing orchestration SaaS)
 
@@ -24,7 +24,8 @@ Meta Ads, or WhatsApp. The shared demo uses **mock** AI and **mock** platform ad
 
 - **Pattern:** Modular monolith (MVP)
 - **Backend:** Java 21, Spring Boot 3.x, PostgreSQL, Flyway migrations (V1–V9)
-- **Frontend:** Next.js 15, React 19, TypeScript
+- **Frontend:** Next.js 16.3.6, React 19, TypeScript
+- **Source:** GitHub org [fixna-in](https://github.com/fixna-in) / `fixna-localboost`
 - **Auth:** JWT access + refresh tokens, BCrypt passwords, RBAC
 - **Multi-tenancy:** Shared PostgreSQL schema; `tenant_id` on tenant-owned rows;
   tenant resolved from authenticated identity (never trust client-supplied tenantId)
@@ -35,10 +36,14 @@ Meta Ads, or WhatsApp. The shared demo uses **mock** AI and **mock** platform ad
 
 ---
 
-## 3. Release 1.0.0 (2026-09-26)
+## 3. Releases
 
-First major release: full MVP + shared demo deployment. Backend `pom.xml` and
-frontend `package.json` version **1.0.0**. See root `CHANGELOG.md`.
+| Version | Date | Summary |
+|---------|------|---------|
+| **1.0.1** | 2026-09-28 | Health API, Next.js 16, CI/deploy fixes, `fixna-in` org, demo live |
+| **1.0.0** | 2026-09-26 | First major release — full MVP + shared demo |
+
+See root `CHANGELOG.md`.
 
 ---
 
@@ -61,7 +66,8 @@ frontend `package.json` version **1.0.0**. See root `CHANGELOG.md`.
 | App (login) | https://app.fixna.in/login |
 | API (custom domain) | https://api.fixna.in |
 | API (Render hostname) | https://fixna-localboost.onrender.com |
-| API health | https://api.fixna.in/actuator/health or `...onrender.com/actuator/health` |
+| API health (aggregated) | https://api.fixna.in/api/v1/health |
+| Actuator health | https://api.fixna.in/actuator/health |
 
 **Render service name:** `fixna-localboost`  
 **Spring profile on Render:** `staging` (baked into Dockerfile + dashboard)  
@@ -104,7 +110,7 @@ mock AI and mock platform adapters.
 
 `SPRING_PROFILES_ACTIVE`, `SPRING_DATASOURCE_URL`, `POSTGRES_USER`, `POSTGRES_PASSWORD`,
 `FIXNA_JWT_SECRET`, `FIXNA_CORS_ALLOWED_ORIGINS`, `FIXNA_APP_ENV`, `FIXNA_AI_PROVIDER`,
-`FIXNA_PLATFORM_MODE`, `PORT`
+`FIXNA_PLATFORM_MODE`, `FIXNA_DEPLOYED_AT` (optional), `PORT`
 
 Templates: `infrastructure/demo/render.env.example`, `render.yaml`
 
@@ -372,20 +378,32 @@ DRAFT → READY_FOR_REVIEW → APPROVED → QUEUED → CREATING → ACTIVE → P
 
 | Trigger | Action |
 |---------|--------|
-| Push/PR | GitHub Actions `ci.yml` — backend tests + frontend build |
-| Push to `main` | Render auto-redeploys API |
+| Push/PR to `main`/`develop` | GitHub Actions `ci.yml` — backend tests + frontend build |
+| Pull request | `dependency-review` job in `ci.yml` |
+| Push to `main` | Render auto-redeploys API (repo: `fixna-in/fixna-localboost`) |
 | Push to `main` | Vercel auto-redeploys frontend |
 
-**Backlog:** CI Docker build, coverage gates, security scan, Vitest/Playwright, OpenAPI from springdoc.
+**GitHub org:** https://github.com/fixna-in — reconnect Render/Vercel GitHub apps after org moves.
+
+**Vercel Hobby note:** private org repos require Pro, public repo, or CLI/Actions deploy.
+
+**Backlog:** CI Docker build, coverage gates, Vitest/Playwright, OpenAPI from springdoc.
 
 ---
 
-## 13. Observability — RequestIdFilter
+## 13. Observability
+
+### Health API (`GET /api/v1/health`)
+
+Returns `status`, `version`, `deployedAt`, `environment`, `service`, `components`
+(`db`, `flyway`, `platform`, …). HTTP 200 when UP, 503 when down. Optional
+`FIXNA_DEPLOYED_AT` on Render; version from Maven `build-info`.
+
+### RequestIdFilter
 
 - Sets/propagates `X-Request-Id`; stores in MDC and response header.
 - When a Micrometer `Tracer` bean exists, copies `traceId`/`spanId` into MDC.
 - Constructor: `RequestIdFilter(Optional<Tracer> tracer)` — empty when tracing off.
-- Dependencies: `micrometer-tracing` + `micrometer-tracing-bridge-otel` in `pom.xml`.
 
 ---
 
@@ -408,7 +426,9 @@ DRAFT → READY_FOR_REVIEW → APPROVED → QUEUED → CREATING → ACTIVE → P
 - [x] Demo user + campaign data via Neon SQL
 - [x] Unified brand mark (favicon + header + auth hero)
 - [x] `RequestIdFilter` Optional&lt;Tracer&gt; + explicit micrometer-tracing dep
-- [x] **Version 1.0.0** released (backend + frontend + manifest)
+- [x] **Version 1.0.1** — health API, Next.js 16, deploy/org fixes
+- [x] GitHub org **fixna-in**; Render + Vercel connected and deploying
+- [x] Aggregated health at `/api/v1/health`
 - [ ] End-to-end smoke: login → dashboard metrics → campaigns on production URLs
 
 ---
